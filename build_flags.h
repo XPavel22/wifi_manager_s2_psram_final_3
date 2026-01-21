@@ -1,0 +1,12 @@
+#pragma once
+#define DEBUG_MODE 1
+
+#define ASYNC_TCP_SSL_ENABLED 0
+#define DEFAULT_MAX_HEADERS 4
+
+#define ESPASYNCWEBSERVER_REGEX 0
+
+#define TCP_MSS 536
+#define HTTP_MAX_DATA_LEN 1024
+
+#define ASYNC_WEBSOCKETS_REGEX 0

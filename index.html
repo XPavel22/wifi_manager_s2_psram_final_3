@@ -1,0 +1,5563 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Device</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      border-radius: 5px 5px 0 0;
+      margin-right: 5px;
+    }
+    .tab.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 0 5px 5px 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .network-list, .telegram-users {
+      list-style: none;
+      padding: 0;
+    }
+    .network-item {
+      background: #f9f9f9;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border-left: 4px solid #4CAF50;
+      overflow: hidden;
+    }
+    .user-item {
+      background: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border-left: 4px solid #4CAF50;
+    }
+    .network-actions, .user-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 6px 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    button.delete {
+      background: #f44336;
+    }
+    button.delete:hover {
+      background: #d32f2f;
+    }
+    button.secondary {
+      background: #2196F3;
+    }
+    button.secondary:hover {
+      background: #0b7dda;
+    }
+    button.test {
+      background: #FF9800;
+    }
+    button.test:hover {
+      background: #F57C00;
+    }
+    button.cancel {
+      background: #9e9e9e;
+    }
+    button.cancel:hover {
+      background: #757575;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+    .info {
+      background-color: #d9edf7;
+      color: #31708f;
+    }
+    .hidden {
+      display: none;
+    }
+
+    .network-header {
+      padding: 12px;
+      background: #e8f5e8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .network-header:hover {
+      background: #d8eed8;
+    }
+    .network-main-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .network-radio {
+      margin: 0;
+    }
+    .network-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .network-status {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    .network-actions-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .network-arrow {
+      font-size: 12px;
+      transition: transform 0.3s ease;
+      min-width: 15px;
+      text-align: center;
+    }
+    .network-details {
+      padding: 15px;
+      background: #f9f9f9;
+      border-top: 1px solid #ddd;
+    }
+    .network-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+
+    .scan-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .ap-toggle {
+      margin: 15px 0;
+      padding: 12px;
+      background: #f0f8ff;
+      border-radius: 5px;
+      border-left: 4px solid #2196F3;
+    }
+    .ap-fields {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .current-badge {
+      color: green;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .static-ip-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    .required-field {
+    border: 2px solid #ffa500 !important;
+    background-color: #fff8e6 !important;
+  }
+  .error-field {
+    border: 2px solid #ff0000 !important;
+    background-color: #ffe6e6 !important;
+  }
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group-inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+      .user-form-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .user-item {
+      background: #d8eed8;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border-left: 4px solid #4CAF50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-item > div {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-form-container .form-group {
+      margin-bottom: 0;
+    }
+
+    .user-form-container button {
+      margin-bottom: 0;
+    }
+
+    .users-header {
+      display: none;
+      margin-bottom: 15px;
+    }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #4CAF50;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+        .status-balloon {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 34px;
+        font-size: 14px;
+        display: none;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        border: 3px solid transparent;
+      }
+
+      .status-balloon.success {
+        border: 3px solid #4caf50;
+      }
+
+      .status-balloon.error {
+        border: 3px solid #f44336;
+      }
+
+.relay-row {
+
+}
+
+.relay-row.user-item {
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.relay-row .relay-description {
+  font-weight: bold;
+  min-width: 120px;
+}
+
+.relay-info-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9em;
+}
+
+select {
+
+    width: max-content;
+    max-width: 100%;
+
+    padding-left: 10px;
+    padding-right: 10ch;
+
+    box-sizing: border-box;
+}
+
+  .log-entry {
+    padding: 5px;
+  }
+
+  .log-entry + .log-entry {
+    margin-top: 3px;
+  }
+
+  .log-highlight {
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px #007BFF, 0 0 8px rgba(0, 123, 255, 0.4);
+    animation: fadeOutBorder 3s ease-in-out forwards;
+  }
+
+  @keyframes fadeOutBorder {
+    0% {
+      box-shadow: 0 0 0 2px #007BFF, 0 0 8px rgba(0, 123, 255, 0.4);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+  }
+
+  .collapsible-container { margin-bottom: 15px; }
+.label-with-toggle { display: flex; align-items: center; }
+.toggle-icon { margin-left: 10px; cursor: pointer; font-size: 1.2em; }
+.hidden { display: none; }
+
+.ap-mode-slider .slider {
+  background-color: #2196F3;
+}
+
+.ap-mode-slider input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+  </style>
+
+</head>
+<body>
+  <h1>ESP32 WiFi & Telegram Manager</h1>
+
+  <div class="tabs">
+    <div class="tab active" onclick="openTab('wifi-tab')">WiFi</div>
+    <div class="tab" onclick="openTab('telegram-tab')">Telegram</div>
+    <div class="tab" onclick="openTab('device-settings-tab')">Settings</div>
+    <div class="tab" onclick="openTab('control-tab')">Control</div>
+  </div>
+
+  <div id="statusBalloon" class="status-balloon" style="display: none"></div>
+
+    <div class="collapsible-container">
+    <div class="label-with-toggle">
+       <div class="label-and-link">
+      <label for="mDNS">Доступ из сети: </label>
+
+      <a href="#" id="mdns-link" target="_blank"></a>
+    </div>
+        <span class="toggle-icon" onclick="toggleMdnsInput()">✎</span>
+    </div>
+    <input type="text" id="mDNS" placeholder="DNS Name" class="hidden">
+</div>
+
+<div id="wifi-tab" class="tab-content active">
+
+<h3 class="section-header">
+    <span id="wifi-mode-title">WiFi Mode</span>
+    <label class="switch ap-mode-slider">
+        <input type="checkbox" id="is-ap" onchange="toggleAPMode()">
+        <span class="slider"></span>
+    </label>
+</h3>
+
+    <div id="ap-fields" class="ap-fields hidden">
+        <div class="form-group">
+            <label for="ap-ssid">AP SSID</label>
+            <input type="text" id="ap-ssid" placeholder="ESP-AP">
+        </div>
+
+        <div class="form-group">
+            <label for="ap-password">AP Password</label>
+            <input type="text" id="ap-password" placeholder="Leave empty for open network">
+        </div>
+
+        <div class="form-group">
+            <label for="ap-ip">AP Static IP</label>
+            <input type="text" id="ap-ip" placeholder="192.168.4.1">
+        </div>
+    </div>
+
+    <div id="sta-fields" class="ap-fields hidden" >
+        <div class="checkbox-group"  style="display: none;>
+            <input type="checkbox" id="auto-reconnect" checked="false">
+            <label for="auto-reconnect">Auto Reconnect</label>
+        </div>
+    </div>
+
+    <button onclick="saveWiFiSettings(event)" style="margin-top: 15px;">Сохранить настройки WiFi</button>
+    <button type="button" id="rebootButton_2"  class="secondary" onclick="socket.send(JSON.stringify({ event: 'reboot' })); startServerCheck() ">Перезагрузить</button>
+
+    <h2>Сохраненные сети</h2>
+    <div id="wifi-status" class="status"></div>
+
+    <ul id="saved-networks" class="network-list">
+
+    </ul>
+
+    <div class="scan-actions">
+        <button onclick="startScan()">Сканировать</button>
+        <button onclick="addNewNetwork()" class="secondary">+ Добавить сеть</button>
+    </div>
+
+    <div id="scan-status" class="status info"></div>
+
+    <h2 id="available-networks-header" style="display: none;">Доступные сети</h2>
+    <ul id="available-networks" class="network-list"></ul>
+</div>
+
+<div id="telegram-tab" class="tab-content">
+  <div class="section-header">
+    <h2>Telegram bot</h2>
+    <label class="switch">
+      <input type="checkbox" id="telegram-enabled">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <form id="telegram-form" >
+    <div class="form-group">
+      <label for="bot-id">Bot Token</label>
+      <input type="text" id="bot-id" placeholder="123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+    </div>
+
+<div class="form-group">
+  <label>Уведомления</label>
+  <div class="checkbox-group" style="display: flex; flex-direction: column; align-items: flex-start;">
+
+    <div>
+      <input type="checkbox" id="telegram-push-0" name="telegram-push">
+      <label for="telegram-push-0">Ошибки [ERROR]</label>
+    </div>
+
+    <div>
+      <input type="checkbox" id="telegram-push-1" name="telegram-push">
+      <label for="telegram-push-1">Информационные [INFO]</label>
+    </div>
+
+    <div>
+      <input type="checkbox" id="telegram-push-2" name="telegram-push">
+      <label for="telegram-push-2">Пользовательские [USER]</label>
+    </div>
+  </div>
+</div>
+
+    <h3 id="users-header" style="display: none; margin-bottom: 15px;">Пользователи</h3>
+
+    <div class="user-form-container">
+      <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 300px;">
+        <label for="new-user-id">User ID</label>
+        <input type="text" id="new-user-id" placeholder="Enter user ID">
+      </div>
+      <button type="button" onclick="addUser()" class="secondary" style="margin-top: 24px;">Add User</button>
+    </div>
+
+    <ul id="telegram-users" class="telegram-users">
+
+    </ul>
+
+    <div class="form-actions">
+      <button type="button" onclick="saveTelegramSettings(event)">Save Settings</button>
+    </div>
+  </form>
+</div>
+
+  <div id="device-settings-tab" class="tab-content">
+    <h2>Device Settings</h2>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('outputs-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Выходы & Входы</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="outputs-section" class="network-details" style="display: none;">
+
+    <div id="relaysListContainer"></div>
+
+    <div class="form-actions" style="margin-top: 15px;">
+      <button type="button" onclick="addNewRelay()" class="secondary">+ Добавить</button>
+      <button type="button" onclick="saveAllRelaySettings()" class="primary">Сохранить</button>
+      <button type="button" onclick="cancelAllRelaySettings()" class="secondary">Отменить</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('sensors-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Сенсоры</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="sensors-section" class="network-details" style="display: none;">
+
+    <div id="sensorsListContainer"></div>
+
+    <div class="form-actions" style="margin-top: 15px;">
+      <button type="button" onclick="addNewSensor(event)" class="secondary">+ Добавить</button>
+      <button type="button" onclick="saveAllSensorSettings(event)" class="primary">Сохранить</button>
+      <button type="button" onclick="cancelAllSensorSettings(event)" class="secondary">Отменить</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('pids-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Настройки ПИД-регуляторов</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="pids-section" class="network-details" style="display: none;">
+    <div class="network-info">
+
+      <div class="form-actions">
+        <button type="button" onclick="addPid()" class="secondary">+ Добавить настройку ПИД</button>
+      </div>
+
+      <div id="pidsContainer" class="network-list"></div>
+
+    </div>
+  </div>
+</div>
+
+    <div class="network-item">
+      <div class="network-header" onclick="toggleDeviceSection('datetime-section')">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>Дата & время </strong>
+        	<span class="network-status" id="currentDateTime"></span>
+          </div>
+        </div>
+        <span class="network-arrow">▼</span>
+      </div>
+      <div id="datetime-section" class="network-details" style="display: none;">
+        <div class="network-info">
+            <div id="dateTimeSettings" style="display: block; margin-top: 10px;">
+            <input type="date" id="dateInput">
+            <input type="time" id="timeInput" step="1" style="width:  max-content;">
+
+<select id="timezone" name="timezone" style="width: max-content;">
+    <option value="3" selected>UTC+3 (Москва)</option>
+    <option value="2">UTC+2 (Калининград)</option>
+    <option value="4">UTC+4 (Самара)</option>
+    <option value="5">UTC+5 (Екатеринбург)</option>
+    <option value="6">UTC+6 (Омск)</option>
+    <option value="7">UTC+7 (Красноярск)</option>
+    <option value="8">UTC+8 (Иркутск)</option>
+    <option value="9">UTC+9 (Якутск)</option>
+    <option value="10">UTC+10 (Владивосток)</option>
+    <option value="11">UTC+11 (Магадан)</option>
+    <option value="12">UTC+12 (Камчатка)</option>
+</select>
+            <button type="button" id="applyDateTimeButton" onclick="saveDateTime()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('upload-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Загрузка/выгрузка/перезагрузка</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="upload-section" class="network-details" style="display: none;">
+    <div class="network-info">
+     <button type="button" id="updateButton" onclick="document.getElementById('fileInput').click()"> Choose file</button>
+     <button type="button" id="saveButton" onclick="downloadFile(`devices.json, settings.json, log.txt`)">Save files</button>
+     <button type="button" id="rebootButton" onclick="socket.send(JSON.stringify({ event: 'reboot' })); startServerCheck() ">Reboot</button>
+          <button type="button" id="fullResetButton" onclick="if (confirm('Настройки устройсвтва будут удалены, продолжить?')) {socket.send(JSON.stringify({ event: 'reset_device' })); startServerCheck() }">Reset device</button>
+     <button type="button" id="fullResetButton" onclick="if (confirm('Все настройки будут удалены, продолжить?')) {socket.send(JSON.stringify({ event: 'full_reset' })); startServerCheck() }">Full reset</button>
+      <input type="file" id="fileInput" style="display: none" onchange="uploadFile()" />
+      <span id="fileName" style="margin-left: 10px;"></span>
+
+      <div style="margin-top: 15px;"><strong><span id="uploadStatus"></span></strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('info-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>О системе</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="info-section" class="network-details" style="display: none;">
+    <div class="network-info">
+      <div id="sysInfoStatus" style="
+        margin-top: 15px;
+        font-family: monospace;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      "></div>
+    </div>
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('event-section')" id="event-header">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>События</strong>
+      </div>
+    </div>
+    <span class="network-arrow">▼</span>
+  </div>
+  <div id="event-section" class="network-details" style="display: none;">
+    <div class="network-info">
+      <div style="margin-top: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+          <div>
+            <label>
+              <input type="checkbox" id="enable-logging" onchange="saveWiFiSettings(event)">
+              Вести логи
+            </label>
+          </div>
+          <div>
+            <button id="save-logs-btn" type="button" onclick="saveLogsToFile(this)" style="margin-right: 5px;">Сохранить логи</button>
+            <button id="clear-logs-btn" type="button" onclick="clearLogs()">Очистить логи</button>
+          </div>
+        </div>
+        <span id="eventStatus"></span>
+      </div>
+      <div id="logContainer" style="max-height: 300px; overflow-y: auto; margin-top: 10px;
+                                   border: 1px solid #ccc; padding: 10px; display: none;">
+        <div id="logContent"></div>
+        <div id="no-logs-message" style="display: none; text-align: center; color: #888; padding: 20px;">
+          Логи отсутствуют
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <div id="control-tab" class="tab-content">
+    <h2>Control</h2>
+
+    <div class="network-item">
+      <div class="network-header" onclick="toggleDeviceSection('manual-control-section')">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>Ручное управление выходами</strong>
+          </div>
+        </div>
+        <span class="network-arrow">▼</span>
+      </div>
+      <div id="manual-control-section" class="network-details" style="display: none;">
+        <div class="network-info">
+          <p>Здесь будет интерфейс для ручного управления выходами.</p>
+        </div>
+      </div>
+    </div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('timers-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Таймеры</strong>
+      </div>
+    </div>
+    <div class="network-actions-header">
+
+      <label class="switch">
+        <input type="checkbox" id="timersUseSetting" onchange="updateDeviceProperty('isTimersEnabled', this.checked)">
+        <span class="slider"></span>
+      </label>
+      <span class="network-arrow">▼</span>
+    </div>
+  </div>
+  <div id="timers-section" class="network-details" style="display: none;">
+    <div class="network-info">
+
+      <div class="form-actions">
+
+        <button type="button" onclick="addTimer()" class="secondary">+ Добавить таймер</button>
+        <label class="checkbox-group">
+          <input type="checkbox" id="encyclateTimers"  onchange="updateDeviceProperty('isEncyclateTimers', this.checked)">
+          Зациклить таймеры
+        </label>
+      </div>
+
+      <div id="timersContainer" class="network-list"></div>
+
+    </div>
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('schedules-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Расписания</strong>
+      </div>
+    </div>
+    <div class="network-actions-header">
+
+      <label class="switch">
+        <input type="checkbox" id="schedulesUseSetting" onchange="updateDeviceProperty('isScheduleEnabled', this.checked)">
+        <span class="slider"></span>
+      </label>
+      <span class="network-arrow">▼</span>
+    </div>
+  </div>
+  <div id="schedules-section" class="network-details" style="display: none;">
+    <div class="network-info">
+
+      <div class="form-actions">
+        <button type="button" onclick="addSchedule()" class="secondary">+ Добавить расписание</button>
+        <button type="button" onclick="deleteAllSchedules()" class="delete">Удалить все</button>
+      </div>
+
+      <div id="schedulesContainer" class="network-list"></div>
+
+    </div>
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('temperature-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Температурный контроль</strong>
+        <span id="temp-header-value" style="margin-left: 15px; font-size: 0.9em; color: #555;">-/- °C</span>
+      </div>
+    </div>
+    <div class="network-actions-header">
+
+      <label class="switch">
+        <input type="checkbox" id="temperatureUseSetting" onchange="updateDeviceProperty('temperature.isUseSetting', this.checked)">
+        <span class="slider"></span>
+      </label>
+      <span class="network-arrow">▼</span>
+    </div>
+  </div>
+  <div id="temperature-section" class="network-details" style="display: none;">
+
+    <div class="network-info">
+      <div id="temperatureContainer" class="network-form"></div>
+    </div>
+
+    <div class="form-actions" style="margin-top: 15px;">
+      <button type="button" onclick="saveTemperatureSettings(event)" class="primary">Сохранить</button>
+      <button type="button" onclick="closeTemperatureSettings(event)" class="secondary">Отменить</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="network-item">
+  <div class="network-header" onclick="toggleDeviceSection('sensor-actions-section')">
+    <div class="network-main-info">
+      <div class="network-title">
+        <strong>Действия на сенсоры</strong>
+      </div>
+    </div>
+    <div class="network-actions-header">
+
+      <label class="switch">
+        <input type="checkbox" id="actionEnabled" onchange="updateDeviceProperty('isActionEnabled', this.checked)">
+        <span class="slider"></span>
+      </label>
+      <span class="network-arrow">▼</span>
+    </div>
+  </div>
+  <div id="sensor-actions-section" class="network-details" style="display: none;">
+    <div class="network-info">
+
+      <div class="form-actions">
+        <button type="button" onclick="addSensorAction()" class="secondary">+ Добавить действие</button>
+      </div>
+
+      <div id="sensorActionsContainer" class="network-list"></div>
+
+    </div>
+  </div>
+</div>
+  </div>
+
+  <script>
+
+    let currentUserIndex = -1;
+    let savedNetworks = [];
+    let newlyAddedSsid = null;
+    let shouldAutoSelectNewNetwork = false;
+    let currentSettings = {};
+    let editingNetwork = null;
+    let telegramUsers = [];
+
+let socket = null;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 10;
+const baseReconnectDelay = 1000;
+let isManuallyClosed = false;
+let reconnectTimeout = null;
+let wasEverConnected = false;
+
+function initWebSocket() {
+    if (isManuallyClosed) return;
+
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+    }
+
+    if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+        console.log('WebSocket already connected or connecting - skipping');
+        return;
+    }
+
+    if (socket) {
+
+        socket.onopen = null;
+        socket.onclose = null;
+        socket.onerror = null;
+        socket.onmessage = null;
+
+        socket.close(1000, "Reinit WebSocket");
+    }
+
+    const wsUrl = `ws://${window.location.hostname}:81/`;
+    console.log('Connecting to:', wsUrl);
+
+    try {
+        socket = new WebSocket(wsUrl);
+
+        socket.onopen = handleSocketOpen;
+        socket.onmessage = handleSocketMessage;
+        socket.onclose = handleSocketClose;
+        socket.onerror = handleSocketError;
+
+    } catch (error) {
+    	 showBalloon('Соединение с устройством потеряно', true, 10);
+        console.error('WebSocket creation error:', error);
+        scheduleReconnect();
+    }
+}
+
+function handleSocketMessageControl(data) {
+    try {
+        if (data.type) {
+            switch (data.type) {
+
+        case 'relays_update':
+            console.log("Пришло > relays_update");
+            updateUIRele(data);
+            break;
+
+        case 'timers_update':
+            console.log("Пришло > timers_update");
+             updateUITimers(data);
+            break;
+
+        case 'device_flags_update':
+            console.log("Пришло > device_flags_update");
+            updateDeviceFlags(data);
+            break;
+
+        case 'sensor_values_update':
+            console.log("Пришло > sensor_values_update");
+             updateUISensorStatus(data);
+            break;
+
+        default:
+            console.log('Unknown message type:', data.type);
+   			 }
+        }
+    }
+    catch (error) {
+        console.error("Error parsing message in Control handler:", error, data.type);
+    }
+}
+
+function handleSocketMessage(event) {
+    try {
+        const data = JSON.parse(event.data);
+        console.log("Received:", data);
+
+          if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = null;
+        }
+        reconnectAttempts = 0;
+
+    	 getlogs(data);
+
+        if (data.type) {
+
+                handleSocketMessageControl(data);
+
+            return;
+        }
+
+        switch(data.event) {
+
+       case 'networks':
+    savedNetworks = data.networks || [];
+    updateNetworkList(savedNetworks);
+
+    		const isApMode = document.getElementById('is-ap').checked;
+            if (isApMode) {
+                console.log("Переключение режима с AP на STA для новой сети.");
+                document.getElementById('is-ap').checked = data.isAP || false;
+                toggleAPMode();
+            }
+
+    if (newlyAddedSsid) {
+        const newNetworkElement = document.querySelector(`[data-ssid="${CSS.escape(newlyAddedSsid)}"]`);
+        if (newNetworkElement) {
+            const details = newNetworkElement.querySelector('.network-details');
+            const arrow = newNetworkElement.querySelector('.network-arrow');
+            if (details && arrow) {
+                details.style.display = 'block';
+                arrow.textContent = '▲';
+            }
+        }
+        newlyAddedSsid = null;
+    }
+
+    if (editingNetwork) {
+        const networkElement = document.querySelector(`[data-ssid="${CSS.escape(editingNetwork)}"]`);
+        if (networkElement) {
+            const details = networkElement.querySelector('.network-details');
+            const arrow = networkElement.querySelector('.network-arrow');
+            if (details && arrow) {
+                details.style.display = 'block';
+                arrow.textContent = '▲';
+            }
+        }
+    }
+
+    break;
+
+            case 'state':
+                updateWiFiSettings(data);
+                break;
+
+            case 'reboot':
+
+					  showBalloon("Перезагрузка...");
+                break;
+
+            case 'telegram':
+                updateTelegramSettings(data);
+                break;
+
+            case 'telegramStatus':
+
+        if (data.success) {
+            showBalloon('Настройки телеграм сохранены');
+        } else {
+          showBalloon('Ошибка сохранения настроек телеграм', true);
+        }
+        break;
+
+            case 'scan_results':
+                updateAvailableNetworks(data.networks);
+                document.getElementById('scan-status').textContent = `Found ${data.networks.length} networks`;
+                document.getElementById('scan-status').className = "status info";
+                break;
+
+            case 'settingsStatus':
+                document.getElementById('wifi-status').textContent = data.message;
+                document.getElementById('wifi-status').className = data.success ? "status success" : "status error";
+                if (data.success) {
+                showBalloon("Настройки WIFI успешно сохранены. Для применения требуется перезагрузка");
+                } else {
+                showBalloon("Ошибка сохранения", true);
+                }
+                break;
+
+            case 'test_started':
+                document.getElementById('wifi-status').textContent = `Testing connection to: ${data.ssid}`;
+                document.getElementById('wifi-status').className = "status info";
+                break;
+
+            case 'test_result':
+
+                if (data.success) {
+                    document.getElementById('wifi-status').textContent = `Connection to ${data.ssid} successful! IP: ${data.ip}`;
+                    document.getElementById('wifi-status').className = "status success";
+
+                    const statusId = `test-status-${data.ssid.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                    const statusElement = document.getElementById(statusId);
+                    if (statusElement) {
+                        statusElement.textContent = "✓ Connected";
+                        statusElement.style.color = "green";
+                    }
+                } else {
+                    document.getElementById('wifi-status').textContent = `Connection to ${data.ssid} failed: ${data.error}`;
+                    document.getElementById('wifi-status').className = "status error";
+
+                    const statusId = `test-status-${data.ssid.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                    const statusElement = document.getElementById(statusId);
+                    if (statusElement) {
+                        statusElement.textContent = "✗ Failed";
+                        statusElement.style.color = "red";
+                    }
+                }
+                break;
+
+                case 'device_setting':
+                    deviceSettings = {
+        ...deviceSettings,
+        ...data
+      };
+                loadRelaySettings();
+                break;
+
+             case 'pong':
+        	  console.log("Server alive!");
+
+        	   if (data && data.dt) {
+
+        const dateTimeElement = document.getElementById('currentDateTime');
+
+        if (dateTimeElement) {
+            dateTimeElement.textContent = data.dt;
+        }
+    }
+        	 break;
+
+            default:
+                console.log("Unknown event type:", data.event);
+                break;
+        }
+    } catch (error) {
+        console.error("Error parsing message:", error, event.data);
+        showBalloon('Ошибка получения данных с устройсва ${error}', true);
+    }
+}
+
+function handleSocketError(error) {
+    console.error('WebSocket error:', error);
+    if (!isManuallyClosed) {
+        scheduleReconnect();
+    }
+}
+
+function scheduleReconnect() {
+    if (isManuallyClosed || reconnectAttempts >= maxReconnectAttempts) {
+
+        return;
+    }
+
+    reconnectAttempts++;
+    const delay = Math.min(baseReconnectDelay * Math.pow(1.5, reconnectAttempts - 1), 10000);
+
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+    }
+
+    reconnectTimeout = setTimeout(() => {
+
+        initWebSocket();
+    }, delay);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    if (document.readyState === 'complete') {
+        setTimeout(() => {
+            initWebSocket();
+
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                requestAllData();
+            } else {
+
+                socket.addEventListener('open', function() {
+                    requestAllData();
+                });
+            }
+        }, 100);
+    } else {
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                initWebSocket();
+
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    requestAllData();
+                } else {
+
+                    socket.addEventListener('open', function() {
+                        requestAllData();
+                    });
+                }
+            }, 100);
+        });
+    }
+});
+
+window.addEventListener('online', function() {
+
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        setTimeout(initWebSocket, 1000);
+    }
+});
+
+let isPageUnloading = false;
+
+window.addEventListener('beforeunload', function() {
+    isManuallyClosed = true;
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+    }
+    stopPeriodicPing();
+    if (socket) {
+    	 socket.onclose = null;
+        socket.close();
+    }
+});
+
+window.WebSocketManager = {
+    reconnect: function() {
+        isManuallyClosed = false;
+        reconnectAttempts = 0;
+        initWebSocket();
+    },
+    disconnect: function() {
+        isManuallyClosed = true;
+        stopPeriodicPing();
+        if (socket) {
+            socket.close();
+        }
+    },
+    getStatus: function() {
+        return socket ? socket.readyState : WebSocket.CLOSED;
+    }
+};
+
+    function openTab(tabId) {
+
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        let settingsData;
+
+        if (tabId === 'control-tab') {
+             socket.send(JSON.stringify({ event: 'tab_control_open' }));
+        } else {
+ 			socket.send(JSON.stringify({ event: 'tab_control_close' }));
+        }
+
+    } else {
+        console.warn('WebSocket is not connected, cannot send tab state.');
+    }
+
+    }
+
+function toggleAPMode() {
+    const isAP = document.getElementById('is-ap').checked;
+    const modeTitle = document.getElementById('wifi-mode-title');
+    const apFields = document.getElementById('ap-fields');
+    const staFields = document.getElementById('sta-fields');
+
+    modeTitle.innerText = isAP ? 'WiFi Mode (AP)' : 'WiFi Mode (STA)';
+
+    apFields.classList.toggle('hidden', !isAP);
+    staFields.classList.toggle('hidden', isAP);
+
+}
+
+   function addNewNetwork() {
+  const baseName = "WiFi Network";
+  const uniqueSsid = generateUniqueName(baseName, savedNetworks, "ssid", false, " ");
+
+   newlyAddedSsid = uniqueSsid;
+   shouldAutoSelectNewNetwork = true;
+
+  const networkData = {
+    event: 'addNetwork',
+    ssid: uniqueSsid,
+    password: '',
+    useStaticIP: false,
+    useProxy: false,
+    proxy: ''
+  };
+
+  socket.send(JSON.stringify(networkData));
+}
+
+function addNetworkFromScan(ssid, bssid, channel) {
+
+  const encryption = scannedNetworksEncryption[ssid];
+
+    shouldAutoSelectNewNetwork = true;
+
+  const networkData = {
+    event: 'addNetwork',
+    ssid: ssid,
+     bssid: bssid,
+    password: '',
+    channel: channel,
+    useStaticIP: false,
+    useProxy: false,
+    proxy: ''
+  };
+
+  socket.send(JSON.stringify(networkData));
+
+  if (encryption && encryption !== "Open" && encryption !== "ENC_TYPE_NONE") {
+    editingNetwork = ssid;
+
+    setTimeout(() => {
+      const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+      if (networkElement) {
+
+        const details = networkElement.querySelector('.network-details');
+        const arrow = networkElement.querySelector('.network-arrow');
+        details.style.display = 'block';
+        arrow.textContent = '▲';
+
+        const safeId = ssid.replace(/[^a-zA-Z0-9]/g, '-');
+        const passwordInput = document.getElementById(`password-${safeId}`);
+        if (passwordInput) {
+          passwordInput.focus();
+          passwordInput.classList.add('required-field');
+        }
+      }
+    }, 500);
+  }
+}
+
+function saveNetwork(ssid) {
+  const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+
+  const selectedRadio = document.querySelector('input[name="current-network"]:checked');
+  const currentNetworkSsid = selectedRadio ? selectedRadio.closest('.network-item').dataset.ssid : "";
+
+  if (!networkElement) return;
+
+  const form = networkElement.querySelector('form');
+  const formData = new FormData(form);
+
+  const networkData = {
+    event: 'updateNetwork',
+    originalSsid: ssid,
+    ssid: formData.get('ssid'),
+    bssid: formData.get('bssid'),
+    channel: formData.get('channel'),
+    password: formData.get('password'),
+    useStaticIP: formData.get('useStaticIP') === 'on',
+    useProxy: formData.get('useProxy') === 'on',
+    proxy: formData.get('proxy') || '',
+    isAP: false
+  };
+
+  if (networkData.useStaticIP) {
+    networkData.ip = formData.get('ip') || '';
+    networkData.gateway = formData.get('gateway') || '';
+    networkData.subnet = formData.get('subnet') || '';
+    networkData.dns = formData.get('dns') || '';
+  }
+
+  socket.send(JSON.stringify(networkData));
+}
+
+    function cancelEdit(ssid) {
+      const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+      if (!networkElement) return;
+
+      if (networkElement.dataset.isNew === 'true') {
+
+        savedNetworks = savedNetworks.filter(net => net.ssid !== ssid);
+        updateNetworkList(savedNetworks);
+      } else {
+
+        const details = networkElement.querySelector('.network-details');
+        details.style.display = 'none';
+        const arrow = networkElement.querySelector('.network-arrow');
+        arrow.textContent = '▼';
+      }
+
+      editingNetwork = null;
+    }
+
+    function deleteNetwork(ssid) {
+
+  socket.send(JSON.stringify({
+    event: 'deleteNetwork',
+    ssid: ssid
+  }));
+}
+
+function testConnection(ssid) {
+
+  const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+  if (!networkElement) {
+
+    return;
+  }
+
+  const bssid = networkElement.dataset.bssid || '';
+   const channel = networkElement.dataset.channel || 0;
+
+  const safeId = ssid.replace(/[^a-zA-Z0-9]/g, '-');
+  const passwordInput = document.getElementById(`password-${safeId}`);
+  const currentPassword = passwordInput ? passwordInput.value : '';
+
+  const encryption = scannedNetworksEncryption[ssid];
+
+  if (encryption && encryption !== "Open" && encryption !== "ENC_TYPE_NONE" && !currentPassword.trim()) {
+
+    const details = networkElement.querySelector('.network-details');
+    const arrow = networkElement.querySelector('.network-arrow');
+
+    if (details.style.display === 'none' || !details.style.display) {
+      details.style.display = 'block';
+      arrow.textContent = '▲';
+      editingNetwork = ssid;
+    }
+
+    if (passwordInput) {
+      passwordInput.focus();
+      passwordInput.classList.add('error-field');
+
+      showPasswordError(ssid, "Password required for secured network");
+    }
+
+    return;
+  }
+
+  if (passwordInput) {
+    passwordInput.classList.remove('error-field');
+    passwordInput.classList.remove('required-field');
+
+    const errorElement = passwordInput.parentNode.querySelector('.error-message');
+    if (errorElement) {
+      errorElement.remove();
+    }
+  }
+
+  const statusId = `test-status-${ssid.replace(/[^a-zA-Z0-9]/g, '-')}`;
+  const statusElement = document.getElementById(statusId);
+  if (statusElement) {
+    statusElement.textContent = "Testing...";
+    statusElement.style.color = "blue";
+  }
+
+  const testData = {
+    event: "test_connection",
+    ssid: ssid,
+    bssid: bssid,
+    channel: channel,
+    password: currentPassword
+  };
+
+  socket.send(JSON.stringify(testData));
+}
+
+function showPasswordError(ssid, message) {
+  const safeId = ssid.replace(/[^a-zA-Z0-9]/g, '-');
+  const passwordInput = document.getElementById(`password-${safeId}`);
+
+  const existingError = passwordInput.parentNode.querySelector('.error-message');
+  if (existingError) {
+    existingError.remove();
+  }
+
+  const errorElement = document.createElement('div');
+  errorElement.className = 'error-message';
+  errorElement.style.color = 'red';
+  errorElement.style.fontSize = '12px';
+  errorElement.style.marginTop = '5px';
+  errorElement.textContent = message;
+
+  passwordInput.parentNode.appendChild(errorElement);
+
+  document.getElementById('wifi-status').textContent = message;
+  document.getElementById('wifi-status').className = "status error";
+}
+    function toggleNetworkDetails(element, ssid) {
+      if (editingNetwork && editingNetwork !== ssid) {
+        return;
+      }
+
+      const networkElement = element.closest('.network-item');
+      const details = networkElement.querySelector('.network-details');
+      const arrow = element.querySelector('.network-arrow');
+
+      if (details.style.display === 'none' || !details.style.display) {
+        details.style.display = 'block';
+        arrow.textContent = '▲';
+        editingNetwork = ssid;
+      } else {
+        details.style.display = 'none';
+        arrow.textContent = '▼';
+        editingNetwork = null;
+      }
+    }
+
+    function toggleStaticIpFields(checkbox, ssid) {
+      const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+      const staticIpFields = networkElement.querySelector('.static-ip-fields');
+      staticIpFields.style.display = checkbox.checked ? 'grid' : 'none';
+    }
+
+    function toggleProxyField(checkbox, ssid) {
+      const networkElement = document.querySelector(`[data-ssid="${ssid}"]`);
+      const proxyField = networkElement.querySelector('.proxy-field');
+      proxyField.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    function startScan() {
+      document.getElementById('scan-status').textContent = "Scanning...";
+      document.getElementById('scan-status').className = "status info";
+      socket.send(JSON.stringify({ event: 'scan' }));
+    }
+
+function saveWiFiSettings(e) {
+
+  if (e) {
+    e.preventDefault();
+  }
+
+  const selectedRadio = document.querySelector('input[name="current-network"]:checked');
+  const currentNetworkSsid = selectedRadio ? selectedRadio.closest('.network-item').dataset.ssid : "";
+
+  const settingsData = {
+    event: 'saveSettings',
+    isAP: Boolean(document.getElementById('is-ap').checked),
+    ssidAP: document.getElementById('ap-ssid').value,
+    mDNS: document.getElementById('mDNS').value,
+    passwordAP: document.getElementById('ap-password').value,
+    staticIpAP: document.getElementById('ap-ip').value,
+    autoReconnect: document.getElementById('auto-reconnect').checked,
+    currentNetworkSsid: currentNetworkSsid,
+    saveLogs: document.getElementById('enable-logging').checked
+  };
+
+  socket.send(JSON.stringify(settingsData));
+
+}
+
+ function updateNetworkList(networks) {
+
+      const list = document.getElementById('saved-networks');
+      list.innerHTML = '';
+
+      if (!networks || networks.length === 0) {
+        list.innerHTML = '<li>No saved networks</li>';
+        return;
+      }
+
+      networks.forEach((net) => {
+        const safeId = net.ssid.replace(/[^a-zA-Z0-9]/g, '-');
+        const item = document.createElement('li');
+        item.className = 'network-item';
+        item.dataset.ssid = net.ssid;
+        item.dataset.bssid = net.bssid;
+        item.dataset.channel = net.channel;
+
+        item.dataset.isNew = net.isNew ? 'true' : 'false';
+
+        item.innerHTML = `
+          <div class="network-header" onclick="toggleNetworkDetails(this, '${net.ssid}')">
+            <div class="network-main-info">
+              <input type="radio" name="current-network" class="network-radio"
+                     ${net.isCurrent ? 'checked' : ''} >
+              <div class="network-title">
+                <strong>${net.ssid}</strong>
+                ${net.isCurrent ? '<span class="current-badge">(Current)</span>' : ''}
+                <span id="test-status-${safeId}" class="network-status"></span>
+              </div>
+            </div>
+            <div class="network-actions-header">
+              <button onclick="testConnection('${net.ssid}'); event.stopPropagation();"
+                      class="test" title="Test connection">Test</button>
+              <button onclick="deleteNetwork('${net.ssid}'); event.stopPropagation();"
+                      class="delete" title="Delete network">✕</button>
+              <span class="network-arrow">▼</span>
+            </div>
+          </div>
+          <div class="network-details" style="display: ${net.isNew ? 'block' : 'none'}">
+            <form class="network-form" onsubmit="event.preventDefault();">
+              <div class="form-row">
+                <label for="ssid-${safeId}">SSID</label>
+                <input type="text" id="ssid-${safeId}" name="ssid" value="${net.ssid}" required>
+              </div>
+
+               <!-- Скрытое поле для BSSID -->
+         		 <input type="hidden" id="bssid-${safeId}" name="bssid" value="${net.bssid || ''}">
+				<input type="hidden" id="channel-${safeId}" name="channel" value="${net.channel ?? 0}">
+
+              <div class="form-row">
+                <label for="password-${safeId}">Password</label>
+                <input type="text" id="password-${safeId}" name="password" value="${net.password || ''}">
+              </div>
+
+              <div class="checkbox-group">
+                <input type="checkbox" id="use-static-ip-${safeId}" name="useStaticIP"
+                       ${net.useStaticIP ? 'checked' : ''}
+                       onchange="toggleStaticIpFields(this, '${net.ssid}')">
+                <label for="use-static-ip-${safeId}">Use Static IP</label>
+              </div>
+
+              <div class="static-ip-fields" style="display: ${net.useStaticIP ? 'grid' : 'none'}">
+                <div class="form-row">
+                  <label for="ip-${safeId}">IP Address</label>
+                  <input type="text" id="ip-${safeId}" name="ip" value="${net.staticIP || ''}" placeholder="192.168.1.100">
+                </div>
+
+                <div class="form-row">
+                  <label for="gateway-${safeId}">Gateway</label>
+                  <input type="text" id="gateway-${safeId}" name="gateway" value="${net.staticGateway || ''}" placeholder="192.168.1.1">
+                </div>
+
+                <div class="form-row">
+                  <label for="subnet-${safeId}">Subnet Mask</label>
+                  <input type="text" id="subnet-${safeId}" name="subnet" value="${net.staticSubnet || ''}" placeholder="255.255.255.0">
+                </div>
+
+                <div class="form-row">
+                  <label for="dns-${safeId}">DNS Server</label>
+                  <input type="text" id="dns-${safeId}" name="dns" value="${net.staticDNS || ''}" placeholder="8.8.8.8">
+                </div>
+              </div>
+
+              <div class="checkbox-group">
+                <input type="checkbox" id="use-proxy-${safeId}" name="useProxy"
+                       ${net.useProxy ? 'checked' : ''}
+                       onchange="toggleProxyField(this, '${net.ssid}')">
+                <label for="use-proxy-${safeId}">Use Proxy</label>
+              </div>
+
+              <div class="proxy-field" style="display: ${net.useProxy ? 'block' : 'none'}">
+                <div class="form-row">
+                  <label for="proxy-${safeId}">Proxy Address</label>
+                  <input type="text" id="proxy-${safeId}" name="proxy" value="${net.proxy || ''}" placeholder="http://proxy.example.com:8080">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" onclick="saveNetwork('${net.ssid}')">Save</button>
+                <button type="button" onclick="cancelEdit('${net.ssid}')" class="cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+    if (net.isCurrent) {
+      if (currentSettings.isTemporaryAP) {
+
+        item.style.border = '2px solid red';
+      } else if (!currentSettings.isAP && !currentSettings.isTemporaryAP) {
+
+        item.style.border = '2px solid green';
+      }
+
+    }
+
+        list.appendChild(item);
+
+        if (net.isNew) {
+          editingNetwork = net.ssid;
+          const arrow = item.querySelector('.network-arrow');
+          arrow.textContent = '▲';
+        }
+      });
+    }
+
+    function updateWiFiSettings(settings) {
+
+      document.getElementById('is-ap').checked = settings.isAP;
+      document.getElementById('ap-ssid').value = settings.ssidAP || 'ESP-AP';
+      document.getElementById('mDNS').value = settings.mDNS || 'sd';
+      document.getElementById('ap-password').value = settings.passwordAP || '';
+      document.getElementById('ap-ip').value = settings.staticIpAP || '192.168.1.1';
+      document.getElementById('auto-reconnect').checked = settings.autoReconnect;
+   	 document.getElementById('enable-logging').checked = settings.saveLogs;
+
+      const [datePart, timePart] = settings.currentDateTime.split(' ');
+	  const formattedDate = datePart.split('-').reverse().join('.') + ' ' + timePart;
+      document.getElementById('currentDateTime').textContent = formattedDate;
+
+      document.getElementById('sysInfoStatus').innerHTML = settings.sysInfo.replace(/\n/g, '<br>');
+
+      toggleAPMode();
+
+      const modeTitle = document.getElementById('wifi-mode-title');
+if (modeTitle) {
+  if (settings.isTemporaryAP) {
+    modeTitle.innerText = 'WiFi Mode (AP - временно!)';
+  }
+    }
+       if (settings.timeZone !== undefined) {
+        const timezoneSelect = document.getElementById('timezone');
+        if (timezoneSelect) {
+            timezoneSelect.value = settings.timeZone.toString();
+
+        }
+    }
+
+      currentSettings = {...currentSettings, ...settings};
+
+      updateMdnsLink();
+    }
+
+    let scannedNetworksEncryption = {};
+
+function updateAvailableNetworks(networks) {
+  const list = document.getElementById('available-networks');
+  const header = document.getElementById('available-networks-header');
+
+  list.innerHTML = '';
+  scannedNetworksEncryption = {};
+
+  if (!networks || networks.length === 0) {
+    list.innerHTML = '<li>No networks found</li>';
+    header.style.display = 'none';
+    return;
+  }
+
+  header.style.display = 'block';
+
+  networks.forEach(net => {
+
+    scannedNetworksEncryption[net.ssid] = net.encryption;
+
+    const item = document.createElement('li');
+    item.className = 'network-item';
+    item.innerHTML = `
+      <div style="padding: 12px;">
+        <div>
+          <strong>${net.ssid}</strong><br>
+          Signal: ${net.rssi} dBm, Channel: ${net.channel}<br>
+          Encryption: ${net.encryption}<br>
+          BSSID: ${net.bssid}
+        </div>
+        <div class="network-actions">
+          <button onclick="addNetworkFromScan('${escapeSSID(net.ssid)}', '${net.bssid}', '${net.channel}')">Add</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function escapeSSID(ssid) {
+  return ssid.replace(/'/g, "\\'")
+             .replace(/"/g, '\\"')
+             .replace(/\\/g, '\\\\');
+}
+
+    function requestAllData() {
+      socket.send(JSON.stringify({ event: 'get_current_state' }));
+      socket.send(JSON.stringify({ event: 'get_networks' }));
+      socket.send(JSON.stringify({ event: 'get_settings_telegram' }));
+      socket.send(JSON.stringify({ event: 'get_settings_device' }));
+      setCurrentDateForInputDate();
+    }
+
+    function updateTelegramSettings(settings) {
+
+  document.getElementById('telegram-enabled').checked = settings.isTelegramOn || false;
+  document.getElementById('bot-id').value = settings.botId || '';
+
+  if (Array.isArray(settings.isPush) && settings.isPush.length === 3) {
+
+    document.getElementById('telegram-push-0').checked = settings.isPush[0] || false;
+    document.getElementById('telegram-push-1').checked = settings.isPush[1] || false;
+    document.getElementById('telegram-push-2').checked = settings.isPush[2] || false;
+  } else {
+
+    document.getElementById('telegram-push-0').checked = false;
+    document.getElementById('telegram-push-1').checked = false;
+    document.getElementById('telegram-push-2').checked = false;
+  }
+
+  telegramUsers = settings.telegramUsers || [];
+
+  updateTelegramUsersList(telegramUsers);
+
+  currentSettings.telegram = settings;
+}
+
+    function updateTelegramUsersList(users) {
+      const list = document.getElementById('telegram-users');
+      const usersHeader = document.getElementById('users-header');
+      list.innerHTML = '';
+
+      if (!users || users.length === 0) {
+        list.innerHTML = '<li>No authorized users</li>';
+        usersHeader.style.display = 'none';
+        return;
+      }
+
+      usersHeader.style.display = 'block';
+
+      users.forEach((user, index) => {
+        const item = document.createElement('li');
+        item.className = 'user-item';
+        item.innerHTML = `
+          <div>
+            <strong>${user.id}</strong>
+            <div class="checkbox-group" style="display: inline-block; margin-left: 15px;">
+              <input type="checkbox" id="user-reading-${index}" ${user.reading ? 'checked' : ''}>
+              <label for="user-reading-${index}">Read</label>
+            </div>
+            <div class="checkbox-group" style="display: inline-block; margin-left: 10px;">
+              <input type="checkbox" id="user-writing-${index}" ${user.writing ? 'checked' : ''}>
+              <label for="user-writing-${index}">Write</label>
+            </div>
+          </div>
+          <div class="user-actions">
+            <button onclick="deleteUser(${index})" class="delete">✕</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function addUser() {
+      const userId = document.getElementById('new-user-id').value.trim();
+
+      if (!userId) {
+        alert('Please enter User ID');
+        return;
+      }
+
+      if (telegramUsers.some(user => user.id === userId)) {
+        alert('User with this ID already exists');
+        return;
+      }
+
+      telegramUsers.push({
+        id: userId,
+        reading: true,
+        writing: true
+      });
+
+      updateTelegramUsersList(telegramUsers);
+
+      document.getElementById('new-user-id').value = '';
+    }
+
+    function deleteUser(index) {
+      if (index >= 0 && index < telegramUsers.length) {
+          telegramUsers.splice(index, 1);
+          updateTelegramUsersList(telegramUsers);
+      }
+    }
+
+  function saveTelegramSettings(event) {
+  event.preventDefault();
+
+  const isPushArray = [
+    document.getElementById('telegram-push-0').checked,
+    document.getElementById('telegram-push-1').checked,
+    document.getElementById('telegram-push-2').checked
+  ];
+
+  const updatedUsers = telegramUsers.map((user, index) => {
+    const readingCheckbox = document.getElementById(`user-reading-${index}`);
+    const writingCheckbox = document.getElementById(`user-writing-${index}`);
+
+    return {
+      id: user.id,
+      reading: readingCheckbox ? readingCheckbox.checked : user.reading,
+      writing: writingCheckbox ? writingCheckbox.checked : user.writing
+    };
+  });
+
+  const telegramData = {
+    event: 'saveTelegramSettings',
+    isTelegramOn: document.getElementById('telegram-enabled').checked,
+    botId: document.getElementById('bot-id').value,
+    isPush: isPushArray,
+    telegramUsers: updatedUsers
+  };
+
+  socket.send(JSON.stringify(telegramData));
+
+}
+
+let deviceSettings = {
+  relays: [],
+  inputs: [],
+  pids: [],
+  pins: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+};
+
+let currentRelays = [];
+let currentSensors = [];
+let currentActions = [];
+let currentPids = [];
+let isNotCloseSettings = false;
+
+function getRelayTypeText(relay) {
+  return relay.isOutput ? "Выход" : "Вход";
+}
+
+function toggleDeviceSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const arrow = section.previousElementSibling.querySelector('.network-arrow');
+
+  if (section.style.display === 'none' || !section.style.display) {
+    section.style.display = 'block';
+    arrow.textContent = '▲';
+
+    if (sectionId === 'outputs-section') {
+      loadRelaySettings();
+    } else if (sectionId === 'sensors-section') {
+      loadSensorSettings();
+       socket.send(JSON.stringify({ event: 'tab_control_open' }));
+
+    } else if (sectionId === 'actions-section') {
+      loadSensorActions();
+    }
+  } else {
+    section.style.display = 'none';
+    arrow.textContent = '▼';
+
+    if (!isControlTabActive()) {
+    	 socket.send(JSON.stringify({ event: 'tab_control_close' }));
+     }
+  }
+}
+
+function isControlTabActive() {
+  const controlTabButton = document.getElementById('control-tab');
+  return controlTabButton && controlTabButton.classList.contains('active');
+}
+
+function checkPinsChanges(initialRelays, updatedRelays) {
+
+  if (updatedRelays.length !== initialRelays.length) {
+
+    return true;
+  }
+
+  const initialRelaysMap = new Map();
+  for (const relay of initialRelays) {
+    initialRelaysMap.set(relay.id, relay);
+  }
+
+  for (const updatedRelay of updatedRelays) {
+    const initialRelay = initialRelaysMap.get(updatedRelay.id);
+
+    if (!initialRelay) {
+
+      return true;
+    }
+
+    if (updatedRelay.pin !== initialRelay.pin) {
+
+      return true;
+    }
+
+    if (updatedRelay.isOutput !== initialRelay.isOutput) {
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function loadRelaySettings(initState = true) {
+  const container = document.getElementById("relaysListContainer");
+  container.innerHTML = "";
+
+  if (!deviceSettings.relays || deviceSettings.relays.length === 0) {
+    container.innerHTML = '<div style="padding: 10px; text-align: center;">No configured relays/inputs</div>';
+    return;
+  }
+
+  ensureRelayIds();
+
+  if (initState) {
+    currentRelays = JSON.parse(JSON.stringify(deviceSettings.relays));
+  }
+
+  const listContainer = document.createElement('div');
+  listContainer.id = 'relays-list-inner';
+
+ deviceSettings.relays.forEach((relay, index) => {
+    const relayItem = document.createElement("div");
+    relayItem.className = "network-item";
+    relayItem.dataset.index = index;
+
+    const header = document.createElement("div");
+    header.className = "network-header";
+    header.onclick = () => toggleRelayBody(index);
+
+    let statusText = `ID: ${relay.id} | Pin: ${relay.pin}`;
+
+    if (relay.isOutput) {
+      statusText += ` | ${relay.statePin ? "On" : "Off"} | Mode: ${relay.manualMode ? "Manual" : "Auto"}`;
+    }
+
+    statusText += ` | ${relay.isOutput ? "OUT" : "IN"}`;
+
+    header.innerHTML = `
+      <div class="network-main-info">
+        <div class="network-title">
+          <strong>${relay.description || `${getRelayTypeText(relay)} ${index + 1}`}</strong>
+          <span class="network-status">${statusText}</span>
+        </div>
+      </div>
+      <div class="network-actions-header">
+        <button onclick="editRelay(${index}, event)" class="secondary">✎</button>
+        <button onclick="copyRelay(${index}, event)" class="secondary">⧉</button>
+        <button onclick="deleteRelay(${index}, event)" class="delete" ${deviceSettings.relays.length <= 1 ? "disabled" : ""}>✕</button>
+        <span class="network-arrow">▼</span>
+      </div>
+    `;
+
+    const body = document.createElement("div");
+    body.id = `relay-body-${index}`;
+    body.className = "network-details";
+    body.style.display = "none";
+
+    const allPins = getPinsListWithStatus(index);
+
+    body.innerHTML = `
+      <form class="network-form">
+        <div class="form-row">
+          <label for="relay-description-${index}">Description:</label>
+          <input type="text" id="relay-description-${index}" value="${relay.description || ""}" placeholder="Relay/Input description">
+        </div>
+
+        <div class="form-row">
+          <label for="relay-pin-${index}">Pin:</label>
+          <select id="relay-pin-${index}" class="form-control">
+            ${allPins.map((pin) => `
+              <option value="${pin.value}" ${pin.disabled ? "disabled" : ""} ${relay.pin === pin.value ? "selected" : ""}>
+                ${pin.label}
+              </option>
+            `).join("")}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="relay-assignment-${index}">Назначение:</label>
+          <select id="relay-assignment-${index}" class="form-control" onchange="handleRelayAssignmentChange(${index}, this.value === 'output')">
+            <option value="output" ${relay.isOutput ? "selected" : ""}>Выход</option>
+            <option value="input" ${!relay.isOutput ? "selected" : ""}>Вход</option>
+          </select>
+        </div>
+
+        <!-- Этот контейнер будет скрываться для входов -->
+        <div id="relay-manual-state-container-${index}" style="display: ${relay.isOutput ? 'block' : 'none'};">
+          <div class="checkbox-group">
+            <input type="checkbox" id="relay-manual-${index}" ${relay.manualMode ? "checked" : ""}>
+            <label for="relay-manual-${index}">Manual mode</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="relay-state-${index}" ${relay.statePin ? "checked" : ""}>
+            <label for="relay-state-${index}">State (On/Off)</label>
+          </div>
+        </div>
+      </form>
+    `;
+
+    relayItem.appendChild(header);
+    relayItem.appendChild(body);
+    listContainer.appendChild(relayItem);
+  });
+
+  container.appendChild(listContainer);
+
+    const controlContainer = document.getElementById("manual-control-section");
+  if (controlContainer) {
+
+    const dataForControlTab = {
+      relays: deviceSettings.relays
+    };
+
+    updateUIRele(dataForControlTab);
+
+    updateTimersFromServer(deviceSettings);
+
+    updateSchedulesFromServer(deviceSettings);
+
+    updateTemperatureFromServer(deviceSettings);
+
+    updatePidsFromServer(deviceSettings);
+
+    updateSensorActionsFromServer(deviceSettings);
+  }
+}
+
+function handleRelayAssignmentChange(index, isOutput) {
+  const container = document.getElementById(`relay-manual-state-container-${index}`);
+  if (container) {
+    container.style.display = isOutput ? 'block' : 'none';
+  }
+}
+
+function saveAllRelaySettings() {
+  const updatedRelays = [];
+  let hasError = false;
+
+  document.querySelectorAll('#relays-list-inner .network-item').forEach(item => {
+    const index = parseInt(item.dataset.index);
+    const relay = deviceSettings.relays[index];
+
+    const description = document.getElementById(`relay-description-${index}`)?.value || "";
+    const pin = parseInt(document.getElementById(`relay-pin-${index}`)?.value || relay.pin);
+    const isOutput = (document.getElementById(`relay-assignment-${index}`)?.value === "output");
+    const manualMode = document.getElementById(`relay-manual-${index}`)?.checked || false;
+    const statePin = document.getElementById(`relay-state-${index}`)?.checked || false;
+
+    const isDuplicate = updatedRelays.some(r => r.pin === pin);
+    if (isDuplicate) {
+      showBalloon(`Ошибка: Пин ${pin} используется несколько раз!`, true);
+      hasError = true;
+      return;
+    }
+
+    updatedRelays.push({
+      ...relay,
+      description, pin, isOutput, manualMode, statePin
+    });
+  });
+
+  if (hasError) return;
+
+  const hasCriticalChanges = checkPinsChanges(currentRelays, updatedRelays);
+
+  if (hasCriticalChanges && !confirm("Изменения требуют перезагрузки устройства. Продолжить?")) {
+    return;
+  }
+
+  deviceSettings.relays = updatedRelays;
+
+  if (socket && socket.readyState === WebSocket.OPEN) {
+      sendSettingsToServer('relays');
+
+    showBalloon("Настройки сохранены успешно!");
+  } else {
+    console.error("WebSocket is not connected");
+    showBalloon("Ошибка: соединение потеряно", true);
+    return;
+  }
+
+  if (hasCriticalChanges) {
+    socket.send(JSON.stringify({ event: 'reboot' }));
+  }
+
+  currentRelays = JSON.parse(JSON.stringify(deviceSettings.relays));
+  loadRelaySettings(false);
+
+  toggleDeviceSection('outputs-section');
+}
+
+function cancelAllRelaySettings() {
+
+  deviceSettings.relays = JSON.parse(JSON.stringify(currentRelays));
+
+  loadRelaySettings(false);
+
+  toggleDeviceSection('outputs-section');
+
+  showBalloon("Изменения отменены");
+}
+
+function getPinsListWithStatus(excludeRelayIndex = -1) {
+  const usedPins = deviceSettings.relays
+    .filter((_, idx) => idx !== excludeRelayIndex)
+    .map((relay) => relay.pin);
+
+  return deviceSettings.pins.map((pin) => {
+    const isOccupied = usedPins.includes(pin);
+    let label = `Pin ${pin}`;
+    if (isOccupied) label += " (используется)";
+
+    return {
+      value: pin,
+      label: label,
+      disabled: isOccupied,
+    };
+  });
+}
+
+function toggleRelayBody(index) {
+  const body = document.getElementById(`relay-body-${index}`);
+  if (body) {
+    body.style.display = body.style.display === "none" ? "block" : "none";
+    const arrow = document.querySelector(`.network-item[data-index="${index}"] .network-arrow`);
+    arrow.textContent = body.style.display === "block" ? "▲" : "▼";
+  }
+}
+
+function editRelay(index, event) {
+  if (event) event.stopPropagation();
+  toggleRelayBody(index);
+}
+
+function copyRelay(index, event) {
+  if (event) event.stopPropagation();
+
+  const availablePin = findNextAvailablePin();
+
+  if (availablePin === -1) {
+    showBalloon("No free pins available for new relay!", true);
+    return;
+  }
+
+  const original = deviceSettings.relays[index];
+  const newRelay = JSON.parse(JSON.stringify(original));
+
+  const maxId = deviceSettings.relays.reduce((max, relay) => Math.max(max, relay.id || 0), 0);
+  newRelay.id = maxId + 1;
+
+  newRelay.description = generateUniqueName(
+    original.description || `${getRelayTypeText(original)} ${index + 1}`,
+    deviceSettings.relays,
+    "description",
+    false,
+    " "
+  );
+
+  newRelay.pin = availablePin;
+  deviceSettings.relays.push(newRelay);
+  loadRelaySettings(false);
+
+  setTimeout(() => {
+    const newIndex = deviceSettings.relays.length - 1;
+    const newItem = document.querySelector(`.network-item[data-index="${newIndex}"]`);
+    if (newItem) {
+      newItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      toggleRelayBody(newIndex);
+    }
+  }, 100);
+}
+
+function ensureRelayIds() {
+  deviceSettings.relays.forEach((relay, index) => {
+    if (relay.id === undefined || relay.id === null) {
+
+      relay.id = index + 1;
+    }
+  });
+}
+
+function findNextAvailablePin() {
+  const usedPins = deviceSettings.relays.map((relay) => relay.pin);
+
+  for (const pin of deviceSettings.pins) {
+    if (!usedPins.includes(pin)) {
+      return pin;
+    }
+  }
+
+  return -1;
+}
+
+function deleteRelay(index, event) {
+  if (event) event.stopPropagation();
+  if (deviceSettings.relays.length <= 1) return;
+
+  deviceSettings.relays.splice(index, 1);
+  loadRelaySettings(false);
+}
+
+function addNewRelay() {
+  const availablePin = findNextAvailablePin();
+
+  if (availablePin === -1) {
+    showBalloon("No free pins available for new relay!", true);
+    return;
+  }
+
+  const maxId = deviceSettings.relays.reduce((max, relay) => Math.max(max, relay.id || 0), 0);
+
+  const newRelay = {
+    id: maxId + 1,
+    description: generateUniqueName("Выход", deviceSettings.relays, "description", false, " "),
+    pin: availablePin,
+    manualMode: false,
+    statePin: false,
+    isOutput: true,
+  };
+
+  deviceSettings.relays.push(newRelay);
+  loadRelaySettings(false);
+
+  setTimeout(() => {
+    const newIndex = deviceSettings.relays.length - 1;
+    const newItem = document.querySelector(`.network-item[data-index="${newIndex}"]`);
+    if (newItem) {
+      newItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      toggleRelayBody(newIndex);
+    }
+  }, 100);
+}
+
+function saveRelaySettings(index = null, event = null) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  let settingsData = {};
+
+  if (index !== null) {
+    const relay = deviceSettings.relays[index];
+    const description = document.getElementById(`relay-description-${index}`)?.value || "";
+    const pin = parseInt(document.getElementById(`relay-pin-${index}`)?.value || relay.pin);
+    const assignment = document.getElementById(`relay-assignment-${index}`)?.value || "output";
+    const manualMode = document.getElementById(`relay-manual-${index}`)?.checked || false;
+    const statePin = document.getElementById(`relay-state-${index}`)?.checked || false;
+
+    relay.description = description;
+    relay.pin = pin;
+    relay.isOutput = (assignment === "output");
+    relay.manualMode = manualMode;
+    relay.statePin = statePin;
+
+    deviceSettings.relays[index] = relay;
+
+  } else {
+
+    deviceSettings.relays.forEach((relay, i) => {
+      const description = document.getElementById(`relay-description-${i}`)?.value || "";
+      const pin = parseInt(document.getElementById(`relay-pin-${i}`)?.value || relay.pin);
+      const assignment = document.getElementById(`relay-assignment-${i}`)?.value || "output";
+      const manualMode = document.getElementById(`relay-manual-${i}`)?.checked || false;
+      const statePin = document.getElementById(`relay-state-${i}`)?.checked || false;
+
+      relay.description = description;
+      relay.pin = pin;
+      relay.isOutput = (assignment === "output");
+      relay.manualMode = manualMode;
+      relay.statePin = statePin;
+    });
+  }
+
+  const [hasConflicts, conflictDetails] = checkPinsConflicts();
+  if (hasConflicts) {
+    alert("Pin conflicts detected:\n" + conflictDetails);
+    return;
+  }
+
+  settingsData = {
+    event: 'saveDeviceSettings',
+    deviceSettings: deviceSettings
+  };
+
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(settingsData));
+
+    showBalloon("Device settings saved successfully!");
+  } else {
+    console.error("WebSocket is not connected");
+    showBalloon("Error: WebSocket connection lost", true);
+  }
+
+  if (index !== null) {
+    collapseRelaySection(index);
+  } else {
+    collapseAllRelaySections();
+  }
+
+  loadRelaySettings(false);
+}
+
+function collapseRelaySection(index) {
+  const body = document.getElementById(`relay-body-${index}`);
+  const arrow = document.querySelector(`.network-item[data-index="${index}"] .network-arrow`);
+
+  if (body && body.style.display === 'block') {
+    body.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function collapseAllRelaySections() {
+  const relayItems = document.querySelectorAll('#relaysListContainer .network-item');
+
+  relayItems.forEach(item => {
+    const index = item.dataset.index;
+    collapseRelaySection(index);
+  });
+}
+
+function cancelRelaySettings() {
+  deviceSettings.relays = JSON.parse(JSON.stringify(currentRelays));
+  loadRelaySettings(false);
+  showBalloon("Changes cancelled");
+}
+
+function checkPinsConflicts() {
+  const pinUsage = {};
+  let hasConflicts = false;
+  let conflictDetails = "Pin conflicts:\n";
+
+  deviceSettings.relays.forEach((relay, index) => {
+    const pin = relay.pin;
+    const type = getRelayTypeText(relay);
+    const name = relay.description || `${type} ${index + 1}`;
+
+    if (pinUsage[pin]) {
+      hasConflicts = true;
+
+      if (pinUsage[pin].length === 1) {
+         conflictDetails += `\nPin ${pin} used by:\n`;
+         pinUsage[pin].forEach(user => conflictDetails += `• ${user}\n`);
+      }
+      pinUsage[pin].push(`${name} (${type})`);
+      conflictDetails += `• ${name} (${type})\n`;
+    } else {
+      pinUsage[pin] = [`${name} (${type})`];
+    }
+  });
+
+  if (!hasConflicts) {
+    return [false, ""];
+  }
+
+  return [true, conflictDetails];
+}
+
+function getSensorTypeText(sensor) {
+
+  if (sensor.typeSensor[0]) return "DHT11";
+  if (sensor.typeSensor[1]) return "DHT22";
+  if (sensor.typeSensor[2]) return "NTC";
+  if (sensor.typeSensor[3]) return "TOUCH_GND";
+  if (sensor.typeSensor[4]) return "ANALOG";
+  return "Unknown";
+}
+
+function setSensorTypeFromText(sensor, typeText) {
+
+  sensor.typeSensor = [false, false, false, false];
+  switch (typeText) {
+    case "DHT11":
+      sensor.typeSensor[0] = true;
+      break;
+    case "DHT22":
+      sensor.typeSensor[1] = true;
+      break;
+    case "NTC":
+      sensor.typeSensor[2] = true;
+      break;
+    case "TOUCH_GND":
+      sensor.typeSensor[3] = true;
+      break;
+    case "ANALOG":
+      sensor.typeSensor[4] = true;
+      break;
+  }
+}
+
+function getInputsListWithStatus(excludeSensorIndex = -1) {
+
+  const availableInputs = deviceSettings.relays.filter(relay => !relay.isOutput);
+
+  const usedInputIds = deviceSettings.sensors
+    .filter((_, idx) => idx !== excludeSensorIndex)
+    .map(sensor => sensor.relayId);
+
+  return availableInputs.map(input => {
+    const isOccupied = usedInputIds.includes(input.id);
+    let label = `${input.description} (Pin ${input.pin})`;
+
+    if (isOccupied) {
+      label += " [ЗАНЯТ]";
+    }
+
+    return {
+      value: input.id,
+      label: label,
+      disabled: false,
+    };
+  });
+}
+
+function updateNtcFieldsVisibility(index) {
+  const typeSelect = document.getElementById(`sensor-type-${index}`);
+  const ntcFields = document.getElementById(`sensor-ntc-fields-${index}`);
+
+  if (typeSelect && ntcFields) {
+    if (typeSelect.value === "NTC") {
+      ntcFields.style.display = 'block';
+    } else {
+      ntcFields.style.display = 'none';
+    }
+  }
+}
+
+function updateDhtFieldsVisibility(index) {
+  const typeSelect = document.getElementById(`sensor-type-${index}`);
+  const dhtFields = document.getElementById(`sensor-dht-fields-${index}`);
+
+  if (typeSelect && dhtFields) {
+    if (typeSelect.value === "DHT11" || typeSelect.value === "DHT22") {
+      dhtFields.style.display = 'block';
+    } else {
+      dhtFields.style.display = 'none';
+    }
+  }
+}
+
+function loadSensorSettings(initState = true) {
+  const container = document.getElementById("sensorsListContainer");
+  if (!container) {
+    const section = document.getElementById('sensors-section');
+    if (section) {
+      const infoDiv = section.querySelector('.network-info');
+      if (infoDiv) {
+        infoDiv.innerHTML = '<div id="sensorsListContainer"></div>';
+      }
+    }
+  }
+
+  const sensorsContainer = document.getElementById("sensorsListContainer");
+  if (!sensorsContainer) return;
+  sensorsContainer.innerHTML = "";
+
+  if (!deviceSettings.sensors || deviceSettings.sensors.length === 0) {
+    sensorsContainer.innerHTML = '<div style="padding: 10px; text-align: center;">Сенсоры не настроены</div>';
+    return;
+  }
+
+  if (initState) {
+    currentSensors = JSON.parse(JSON.stringify(deviceSettings.sensors));
+  }
+
+  const listContainer = document.createElement('div');
+  listContainer.id = 'sensors-list-inner';
+
+  deviceSettings.sensors.forEach((sensor, index) => {
+    const linkedInput = deviceSettings.relays.find(r => r.id === sensor.relayId);
+    const pin = linkedInput ? linkedInput.pin : 'N/A';
+    const currentType = getSensorTypeText(sensor);
+
+    const INVALID_SENSOR_VALUE = -998;
+    let valueString = "";
+    const isDht = currentType === "DHT11" || currentType === "DHT22";
+
+    if (isDht) {
+
+      const tempValid = typeof sensor.currentValue === 'number' && !isNaN(sensor.currentValue) && sensor.currentValue > INVALID_SENSOR_VALUE;
+      const humidityValid = typeof sensor.humidityValue === 'number' && !isNaN(sensor.humidityValue) && sensor.humidityValue > INVALID_SENSOR_VALUE;
+
+      if (tempValid && humidityValid) {
+        valueString = `${sensor.currentValue.toFixed(1)}°C / ${sensor.humidityValue.toFixed(1)}%`;
+      } else if (tempValid) {
+        valueString = `${sensor.currentValue.toFixed(1)}°C`;
+      } else if (humidityValid) {
+        valueString = `${sensor.humidityValue.toFixed(1)}%`;
+      } else {
+        valueString = "-/-";
+      }
+    } else {
+
+      if (typeof sensor.currentValue === 'number' && !isNaN(sensor.currentValue) && sensor.currentValue > INVALID_SENSOR_VALUE) {
+        if (currentType === "NTC") {
+          valueString = `${sensor.currentValue.toFixed(1)}°C`;
+        } else if (currentType === "TOUCH_GND" || currentType === "ANALOG") {
+          valueString = `${sensor.currentValue.toFixed(0)}`;
+        } else {
+          valueString = `${sensor.currentValue.toFixed(1)}`;
+        }
+      } else {
+        valueString = "-/-";
+      }
+    }
+
+    const sensorItem = document.createElement("div");
+    sensorItem.className = "network-item";
+    sensorItem.dataset.index = index;
+    sensorItem.dataset.sensorId = sensor.sensorId;
+
+    const header = document.createElement("div");
+    header.className = "network-header";
+    header.onclick = () => toggleSensorBody(index);
+    header.innerHTML = `
+      <div class="network-main-info">
+        <div class="network-title">
+          <strong>${sensor.description || `Сенсор ${index + 1}`}</strong>
+          <span id="sensor-status-${sensor.sensorId}" class="network-status">ID: ${sensor.sensorId} | ${currentType} | ${valueString}</span>
+        </div>
+      </div>
+      <div class="network-actions-header">
+        <button onclick="editSensor(${index}, event)" class="secondary">✎</button>
+        <button onclick="copySensor(${index}, event)" class="secondary">⧉</button>
+        <button onclick="deleteSensor(${index}, event)" class="delete" ${deviceSettings.sensors.length <= 1 ? "disabled" : ""}>✕</button>
+        <label class="switch">
+          <input type="checkbox" id="sensor-enabled-${index}" ${sensor.isUseSetting ? "checked" : ""} onchange="updateDeviceProperty('sensors.${index}.isUseSetting', this.checked); event.stopPropagation()">
+          <span class="slider"></span>
+        </label>
+        <span class="network-arrow">▼</span>
+      </div>
+    `;
+
+    const body = document.createElement("div");
+    body.id = `sensor-body-${index}`;
+    body.className = "network-details";
+    body.style.display = "none";
+
+    const inputsList = getInputsListWithStatus(index);
+    const showNtcFields = currentType === "NTC";
+
+    body.innerHTML = `
+      <form class="network-form">
+        <div class="form-row">
+          <label for="sensor-name-${index}">Название сенсора:</label>
+          <input type="text" id="sensor-name-${index}" value="${sensor.description || ""}" placeholder="Например, Датчик улицы">
+        </div>
+
+        <div class="form-row">
+          <label for="sensor-input-${index}">Вход:</label>
+          <select id="sensor-input-${index}" class="form-control">
+            ${inputsList.map(input => `
+              <option value="${input.value}" ${sensor.relayId === input.value ? "selected" : ""}>${input.label}</option>
+            `).join("")}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="sensor-type-${index}">Тип:</label>
+          <select id="sensor-type-${index}" class="form-control" onchange="handleSensorTypeChange(${index}, this.value)">
+            <option value="DHT11" ${currentType === "DHT11" ? "selected" : ""}>DHT11</option>
+            <option value="DHT22" ${currentType === "DHT22" ? "selected" : ""}>DHT22</option>
+            <option value="NTC" ${currentType === "NTC" ? "selected" : ""}>NTC</option>
+            <option value="TOUCH_GND" ${currentType === "TOUCH_GND" ? "selected" : ""}>TOUCH_GND</option>
+            <option value="ANALOG" ${currentType === "ANALOG" ? "selected" : ""}>ANALOG</option>
+          </select>
+        </div>
+
+        <div id="sensor-ntc-fields-${index}" style="display: ${showNtcFields ? 'block' : 'none'};">
+            <div class="form-row">
+                <label for="sensor-serial-r-${index}">Serial R (Ом):</label>
+                <input type="number" id="sensor-serial-r-${index}" value="${sensor.serial_r || 20000}" placeholder="20000">
+            </div>
+            <div class="form-row">
+                <label for="sensor-thermistor-r-${index}">Thermistor R (Ом):</label>
+                <input type="number" id="sensor-thermistor-r-${index}" value="${sensor.thermistor_r || 10000}" placeholder="10000">
+            </div>
+        </div>
+      </form>
+    `;
+
+    sensorItem.appendChild(header);
+    sensorItem.appendChild(body);
+    listContainer.appendChild(sensorItem);
+  });
+
+  sensorsContainer.appendChild(listContainer);
+}
+
+function handleSensorTypeChange(index, typeText) {
+  const ntcFields = document.getElementById(`sensor-ntc-fields-${index}`);
+  if (ntcFields) {
+    ntcFields.style.display = (typeText === "NTC") ? 'block' : 'none';
+  }
+
+}
+
+function checkSensorChanges(initialSensors, updatedSensors) {
+
+  if (updatedSensors.length !== initialSensors.length) {
+
+    return true;
+  }
+
+  const initialSensorsMap = new Map();
+  for (const sensor of initialSensors) {
+    initialSensorsMap.set(sensor.sensorId, sensor);
+  }
+
+  for (const updatedSensor of updatedSensors) {
+    const initialSensor = initialSensorsMap.get(updatedSensor.sensorId);
+
+    if (!initialSensor) {
+
+      return true;
+    }
+
+    if (updatedSensor.relayId !== initialSensor.relayId) {
+
+      return true;
+    }
+
+    const initialType = getSensorTypeText(initialSensor);
+    const updatedType = getSensorTypeText(updatedSensor);
+    if (initialType !== updatedType) {
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function saveAllSensorSettings(event) {
+ if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const updatedSensors = [];
+  let hasError = false;
+  const sensorItems = document.querySelectorAll('#sensors-list-inner .network-item');
+
+  for (const item of sensorItems) {
+    const index = parseInt(item.dataset.index);
+    const originalSensor = deviceSettings.sensors[index];
+
+    const nameInput = document.getElementById(`sensor-name-${index}`)?.value || "";
+    const inputId = parseInt(document.getElementById(`sensor-input-${index}`)?.value || originalSensor.relayId);
+    const typeText = document.getElementById(`sensor-type-${index}`)?.value || "DHT11";
+    const serialR = parseInt(document.getElementById(`sensor-serial-r-${index}`)?.value || 20000);
+    const thermistorR = parseInt(document.getElementById(`sensor-thermistor-r-${index}`)?.value || 10000);
+
+    const isDuplicateInput = updatedSensors.some(s => s.relayId === inputId);
+    if (isDuplicateInput) {
+      showBalloon(`Ошибка: Вход ${inputId} используется несколькими сенсорами!`, true);
+      hasError = true;
+      break;
+    }
+
+    const otherSensors = [...deviceSettings.sensors.filter((_, i) => i !== index), ...updatedSensors];
+    const isNameUnique = !otherSensors.some(s => s.description === nameInput);
+
+    let finalName = nameInput;
+    if (!isNameUnique && nameInput.trim() !== "") {
+        finalName = generateUniqueName(nameInput, otherSensors, "description", false, " ");
+        showBalloon(`Имя "${nameInput}" уже существует. Сенсор переименован в "${finalName}"`, false);
+    }
+
+    const updatedSensor = {
+      ...originalSensor,
+      description: finalName,
+      relayId: inputId,
+      serial_r: serialR,
+      thermistor_r: thermistorR,
+    };
+
+    setSensorTypeFromText(updatedSensor, typeText);
+    updatedSensors.push(updatedSensor);
+  }
+
+  if (hasError) return;
+
+const hasCriticalChanges = checkSensorChanges(currentSensors, updatedSensors);
+
+if (hasCriticalChanges && !confirm("Изменения требуют перезагрузки устройства. Продолжить?")) {
+return;
+}
+
+deviceSettings.sensors = updatedSensors;
+
+if (socket && socket.readyState === WebSocket.OPEN) {
+ sendSettingsToServer('sensors');
+
+showBalloon("Настройки сенсоров сохранены успешно. Требуется перезагрузка!");
+} else {
+console.error("WebSocket is not connected");
+showBalloon("Ошибка: соединение потеряно", true);
+return;
+}
+
+if (hasCriticalChanges) {
+socket.send(JSON.stringify({ event: 'reboot' }));
+}
+
+currentSensors = JSON.parse(JSON.stringify(deviceSettings.sensors));
+loadSensorSettings(false);
+
+toggleDeviceSection('sensors-section');
+}
+
+function cancelAllSensorSettings(event) {
+ if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  deviceSettings.sensors = JSON.parse(JSON.stringify(currentSensors));
+
+  loadSensorSettings(false);
+
+  toggleDeviceSection('sensors-section');
+
+  showBalloon("Изменения отменены", false, 3);
+}
+
+function toggleSensorBody(index) {
+  const body = document.getElementById(`sensor-body-${index}`);
+  if (body) {
+    body.style.display = body.style.display === "none" ? "block" : "none";
+    const arrow = document.querySelector(`#sensorsListContainer .network-item[data-index="${index}"] .network-arrow`);
+    arrow.textContent = body.style.display === "block" ? "▲" : "▼";
+  }
+}
+
+function editSensor(index, event) {
+  if (event) event.stopPropagation();
+  toggleSensorBody(index);
+}
+
+function copySensor(index, event) {
+    if (event) event.stopPropagation();
+
+    const original = deviceSettings.sensors[index];
+    const newSensor = JSON.parse(JSON.stringify(original));
+
+    const maxSensorId = deviceSettings.sensors.reduce((max, sensor) => Math.max(max, sensor.sensorId || 0), 0);
+    newSensor.sensorId = maxSensorId + 1;
+
+    newSensor.description = generateUniqueName(
+        original.description || "Новый сенсор",
+        deviceSettings.sensors,
+        "description",
+        false,
+        " "
+    );
+
+    const availableInputs = deviceSettings.relays?.filter(r => !r.isOutput) || [];
+    if (availableInputs.length > 0) {
+
+        newSensor.relayId = availableInputs[0].id;
+    } else {
+
+        newSensor.relayId = 0;
+        showBalloon("Внимание: нет доступных входов для сенсора", true);
+    }
+
+    deviceSettings.sensors.push(newSensor);
+    loadSensorSettings(false);
+
+    setTimeout(() => {
+        const newIndex = deviceSettings.sensors.length - 1;
+        const newItem = document.querySelector(`#sensorsListContainer .network-item[data-index="${newIndex}"]`);
+        if (newItem) {
+            newItem.scrollIntoView({ behavior: "smooth", block: "center" });
+            toggleSensorBody(newIndex);
+        }
+    }, 100);
+}
+
+function deleteSensor(index, event) {
+  if (event) event.stopPropagation();
+  if (deviceSettings.sensors.length <= 1) return;
+
+  deviceSettings.sensors.splice(index, 1);
+  loadSensorSettings(false);
+}
+
+function addNewSensor(event) {
+ if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+    const availableInputs = deviceSettings.relays?.filter(r => !r.isOutput) || [];
+    if (availableInputs.length === 0) {
+        showBalloon("Нет доступных физических входов для создания сенсора", true);
+        return;
+    }
+
+    const maxSensorId = deviceSettings.sensors.reduce((max, sensor) => Math.max(max, sensor.sensorId || 0), 0);
+
+    const newSensor = {
+
+        description: generateUniqueName("Новый сенсор", deviceSettings.sensors, "description", false, " "),
+        isUseSetting: false,
+        sensorId: maxSensorId + 1,
+        relayId: availableInputs[0].id,
+        typeSensor: [false, false, false, false],
+        serial_r: 20000,
+        thermistor_r: 10000,
+        currentValue: 0.0,
+        humidityValue: 0.0
+    };
+    setSensorTypeFromText(newSensor, "DHT11");
+
+    deviceSettings.sensors.push(newSensor);
+    loadSensorSettings(false);
+
+    setTimeout(() => {
+        const newIndex = deviceSettings.sensors.length - 1;
+        const newItem = document.querySelector(`#sensorsListContainer .network-item[data-index="${newIndex}"]`);
+        if (newItem) {
+            newItem.scrollIntoView({ behavior: "smooth", block: "center" });
+            toggleSensorBody(newIndex);
+        }
+    }, 100);
+}
+
+function saveSensorSettings(index = null, event = null) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  const indicesToSave = index !== null ? [index] : deviceSettings.sensors.map((_, i) => i);
+
+  indicesToSave.forEach(i => {
+    const sensor = deviceSettings.sensors[i];
+    const name = document.getElementById(`sensor-name-${i}`)?.value || "";
+    const inputId = parseInt(document.getElementById(`sensor-input-${i}`)?.value || 0);
+    const typeText = document.getElementById(`sensor-type-${i}`)?.value || "DHT11";
+    const serialR = parseInt(document.getElementById(`sensor-serial-r-${i}`)?.value || 20000);
+    const thermistorR = parseInt(document.getElementById(`sensor-thermistor-r-${i}`)?.value || 10000);
+    const isUseSetting = document.getElementById(`sensor-use-${i}`)?.checked || false;
+
+    const dhtValueType = document.getElementById(`sensor-dht-value-type-${i}`)?.value || "temperature";
+    const isHumidity = (dhtValueType === "humidity");
+
+    sensor.description = name;
+    sensor.relayId = inputId;
+    setSensorTypeFromText(sensor, typeText);
+    sensor.serial_r = serialR;
+    sensor.thermistor_r = thermistorR;
+    sensor.isUseSetting = isUseSetting;
+    sensor.isHumidity = isHumidity;
+  });
+
+  const settingsData = {
+    event: 'saveDeviceSettings',
+    deviceSettings: deviceSettings
+  };
+
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(settingsData));
+
+    showBalloon("Sensor settings saved successfully!");
+  } else {
+    console.error("WebSocket is not connected");
+    showBalloon("Error: WebSocket connection lost", true);
+  }
+
+  if (index !== null) {
+    collapseSensorSection(index);
+  } else {
+    collapseAllSensorSections();
+  }
+}
+
+function collapseSensorSection(index) {
+  const body = document.getElementById(`sensor-body-${index}`);
+  const arrow = document.querySelector(`#sensorsListContainer .network-item[data-index="${index}"] .network-arrow`);
+  if (body && body.style.display === 'block') {
+    body.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function collapseAllSensorSections() {
+  const sensorItems = document.querySelectorAll('#sensorsListContainer .network-item');
+  sensorItems.forEach(item => {
+    const index = item.dataset.index;
+    collapseSensorSection(index);
+  });
+}
+
+function updateUIRele(data) {
+
+  const container = document.getElementById("manual-control-section");
+  if (!container) {
+
+    return;
+  }
+
+  const checkbox = document.getElementById("savePinCheckbox");
+  const currentCheckboxState = checkbox ? checkbox.checked : false;
+
+  container.innerHTML = "";
+
+  if (!data.relays || data.relays.length === 0) {
+    container.innerHTML = "<p>Устройства не найдены или еще не настроены.</p>";
+    return;
+  }
+
+  const outputRelays = data.relays.filter(relay => relay.isOutput !== false);
+
+  if (outputRelays.length === 0) {
+    container.innerHTML = "<p>Настроенные выходы не найдены.</p>";
+    return;
+  }
+
+  outputRelays.forEach((relay) => {
+    const row = document.createElement("div");
+    row.classList.add("relay-row", "user-item");
+    row.dataset.relay = relay.description;
+    row.innerHTML = `
+      <div class="relay-description"><strong>${relay.description}</strong></div>
+      <div class="relay-info-group">
+        <div class="relay-controls">
+          <button type="button" onclick="sendCommand(${relay.id}, 'on')">On</button>
+          <button type="button" onclick="sendCommand(${relay.id}, 'off')">Off</button>
+          <button type="button" onclick="sendCommand(${relay.id}, 'reset')" class="cancel">↺</button>
+        </div>
+        <div class="relay-state">
+          Статус: <span style="color: ${relay.statePin ? "green" : "red"};">${relay.statePin ? "On" : "Off"}</span>
+        </div>
+        <div class="relay-mode">
+          Режим: <span style="color: ${relay.manualMode ? "red" : "green"};">${relay.manualMode ? "Manual" : "Auto"}</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  const globalActionsDiv = document.createElement("div");
+  globalActionsDiv.className = "form-actions";
+
+  const checkedAttribute = currentCheckboxState ? 'checked' : '';
+
+  globalActionsDiv.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button type="button" onclick="sendResetAllCommand()" class="delete">Reset All Relays</button>
+      <div>
+        <input type="checkbox" id="savePinCheckbox" ${checkedAttribute} onchange="isSavePinState = this.checked">
+        <label for="savePinCheckbox">Сохранить состояние</label>
+      </div>
+    </div>
+  `;
+  container.appendChild(globalActionsDiv);
+}
+
+function sendResetAllCommand() {
+
+  const timestamp = Date.now();
+  socket.send(
+    JSON.stringify({
+      event: "relay",
+      action: "reset_all",
+      timestamp: timestamp,
+      isSave: isSavePinState
+    }),
+  );
+}
+
+let isSavePinState = false;
+
+function sendCommand(relayId, action) {
+
+  const timestamp = Date.now();
+  socket.send(
+    JSON.stringify({
+      event: "relay",
+
+      relay: relayId,
+      action: action,
+      timestamp: timestamp,
+      isSave: isSavePinState
+    }),
+  );
+}
+
+function updateDeviceProperty(propertyPath, value) {
+  const keys = propertyPath.split('.');
+  let current = deviceSettings;
+
+  for (let i = 0; i < keys.length - 1; i++) {
+
+    const key = keys[i];
+    if (!isNaN(key) && Array.isArray(current)) {
+
+      const index = parseInt(key);
+      if (index >= current.length) {
+
+        for (let j = current.length; j <= index; j++) {
+          current.push({});
+        }
+      }
+      if (!current[index] || typeof current[index] !== 'object') {
+        current[index] = {};
+      }
+      current = current[index];
+    } else {
+
+      if (!current[key] || typeof current[key] !== 'object') {
+        current[key] = {};
+      }
+      current = current[key];
+    }
+  }
+
+  const lastKey = keys[keys.length - 1];
+  current[lastKey] = value;
+
+  let payload;
+
+  const topLevelKey = keys[0];
+
+  let isArrayElement = false;
+  let arrayName = null;
+
+  for (let i = 0; i < keys.length; i++) {
+    if (!isNaN(keys[i]) && i > 0) {
+
+      arrayName = keys[i - 1];
+      isArrayElement = true;
+      break;
+    }
+  }
+
+  if (!isArrayElement && Array.isArray(deviceSettings[topLevelKey])) {
+    arrayName = topLevelKey;
+    isArrayElement = true;
+  }
+
+  if (isArrayElement && arrayName && Array.isArray(deviceSettings[arrayName])) {
+
+    payload = { [arrayName]: deviceSettings[arrayName] };
+
+  } else {
+
+    payload = {};
+    let payloadPointer = payload;
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (i === keys.length - 1) {
+        payloadPointer[key] = value;
+      } else {
+        if (!payloadPointer[key]) {
+          payloadPointer[key] = {};
+        }
+        payloadPointer = payloadPointer[key];
+      }
+    }
+
+  }
+
+  sendPartialSettings(payload);
+
+  if (propertyPath.startsWith('timers') || propertyPath.startsWith('isTimersEnabled')) {
+    renderTimers();
+  } else if (propertyPath.startsWith('scheduleScenarios')) {
+
+  } else if (propertyPath.startsWith('temperature')) {
+
+  } else if (propertyPath.startsWith('sensors')) {
+       showBalloon("Для применения этих настроек требуется перезагрузка");
+  } else {
+
+    updateSpecificUIElement(propertyPath, value);
+  }
+}
+
+function sendPartialSettings(partialSettings) {
+
+  if (!socket || socket.readyState !== WebSocket.OPEN) {
+    console.error("WebSocket is not connected");
+    showBalloon("Error: WebSocket connection lost", true);
+    return;
+  }
+
+  const message = JSON.stringify({
+    event: 'saveDeviceSettings',
+    deviceSettings: partialSettings
+  });
+
+  socket.send(message);
+
+}
+
+function renderCheckboxDropdown(title, items, selectedItemIndices, index, arrayName) {
+  return `
+    <div class="form-row">
+      <h4>${title}</h4>
+      <div class="checkbox-dropdown" style="position: relative; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+        <div class="dropdown-toggle" style="padding: 8px; cursor: pointer; display: flex; justify-content: space-between;"
+             onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>Выбрать...</span>
+          <span style="user-select: none;">▼</span>
+        </div>
+        <div class="dropdown-menu" style="display: none; position: absolute; z-index: 10; background: white; border: 1px solid #ddd; border-radius:4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 100%;">
+          ${items.map((item, i) => `
+            <label style="display: block; padding: 5px 10px; margin: 0;">
+              <input type="checkbox" ${selectedItemIndices[i] ? 'checked' : ''}
+                onchange="updateScheduleArrayProperty(${index}, '${arrayName}', ${i}, this.checked)"> ${item}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateSpecificUIElement(propertyPath, value) {
+  if (propertyPath === 'isTimersEnabled') {
+    const checkbox = document.getElementById('timersUseSetting');
+    if (checkbox) checkbox.checked = value;
+  }
+  if (propertyPath === 'isEncyclateTimers') {
+    const checkbox = document.getElementById('encyclateTimers');
+    if (checkbox) checkbox.checked = value;
+  }
+
+  if (propertyPath === 'isScheduleEnabled') {
+    const checkbox = document.getElementById('schedulesUseSetting');
+    if (checkbox) checkbox.checked = value;
+  }
+
+  if (propertyPath === 'temperature.isUseSetting') {
+    const checkbox = document.getElementById('temperatureUseSetting');
+    if (checkbox) checkbox.checked = value;
+  }
+
+  if (propertyPath === 'isActionEnabled') {
+    const checkbox = document.getElementById('actionEnabled');
+    if (checkbox) checkbox.checked = value;
+  }
+}
+
+function sendSettingsToServer(section) {
+
+  if (!socket || socket.readyState !== WebSocket.OPEN) {
+    console.error("WebSocket is not connected");
+    showBalloon("Error: WebSocket connection lost", true);
+    return;
+  }
+
+  let payload;
+
+  if (!section) {
+
+    payload = deviceSettings;
+
+  } else {
+
+    if (deviceSettings.hasOwnProperty(section)) {
+
+      payload = { [section]: deviceSettings[section] };
+
+    } else {
+
+      console.error(`Error: Settings section '${section}' not found in deviceSettings.`);
+      showBalloon(`Error: Settings section '${section}' not found.`, true);
+      return;
+    }
+  }
+
+  const message = JSON.stringify({
+    event: 'saveDeviceSettings',
+    deviceSettings: payload
+  });
+
+  socket.send(message);
+
+}
+
+function addTimer() {
+  const newTimer = {
+    time: "00:30:00",
+    isUseSetting: false,
+
+    collectionSettings: [false, true, false, false],
+    initialStateRelay: {
+      isUseSetting: false,
+      relayId: 0,
+      statePin: false,
+      description: "Initial Timer Power"
+    },
+    endStateRelay: {
+      isUseSetting: true,
+      relayId: 0,
+      statePin: true,
+      description: "End Timer Power"
+    }
+  };
+  if (!deviceSettings.timers) deviceSettings.timers = [];
+  deviceSettings.timers.push(newTimer);
+  sendSettingsToServer('timers');
+  renderTimers();
+  setTimeout(() => toggleTimerDetails(deviceSettings.timers.length - 1), 100);
+}
+
+function removeTimer(index) {
+  if (confirm('Удалить таймер?')) {
+    deviceSettings.timers.splice(index, 1);
+    sendSettingsToServer('timers');
+    renderTimers();
+  }
+}
+
+function copyTimer(index) {
+  const timerToCopy = deviceSettings.timers[index];
+  const newTimer = JSON.parse(JSON.stringify(timerToCopy));
+  deviceSettings.timers.push(newTimer);
+  sendSettingsToServer('timers');
+  renderTimers();
+  setTimeout(() => toggleTimerDetails(deviceSettings.timers.length - 1), 100);
+}
+
+function toggleTimerDetails(index) {
+  const details = document.getElementById(`timerDetails-${index}`);
+  const arrow = document.getElementById(`timerArrow-${index}`);
+
+  if (details.style.display === 'none' || !details.style.display) {
+    details.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    details.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function updateTimerTime(index, timeValue) {
+  if (!deviceSettings.timers[index]) return;
+  let formattedValue = timeValue;
+  if ((formattedValue.match(/:/g) || []).length < 2) {
+    formattedValue += ":00";
+  }
+  deviceSettings.timers[index].time = formattedValue;
+}
+
+function handleInitialStateChange(index, isUseSetting) {
+  const optionsContainer = document.getElementById(`initial-options-${index}`);
+  if (optionsContainer) {
+    optionsContainer.style.display = isUseSetting ? 'block' : 'none';
+  }
+}
+
+function handleEndStateChange(index, stateIndex) {
+  const optionsContainer = document.getElementById(`end-options-${index}`);
+  if (optionsContainer) {
+    optionsContainer.style.display = (stateIndex === 1) ? 'block' : 'none';
+  }
+}
+
+function saveTimerSettings(index) {
+  if (!deviceSettings.timers[index]) return;
+
+  const timer = deviceSettings.timers[index];
+
+  const initialStateValue = getCheckedRadioValue(`initialState${index}`);
+  if (initialStateValue) {
+    timer.initialStateRelay.isUseSetting = (initialStateValue === "output");
+    if (timer.initialStateRelay.isUseSetting) {
+
+      const relaySelect = document.getElementById(`initialRelaySelect${index}`);
+      const modeSelect = document.getElementById(`initialModeSelect${index}`);
+      if (relaySelect) timer.initialStateRelay.relayId = parseInt(relaySelect.value);
+      if (modeSelect) timer.initialStateRelay.statePin = modeSelect.value === "on";
+    } else {
+
+      timer.initialStateRelay.isUseSetting = false;
+    }
+  }
+
+  const endStateValue = getCheckedRadioValue(`endState${index}`);
+  if (endStateValue) {
+
+    timer.collectionSettings = [false, false, false, false];
+
+    if (endStateValue === "tempControl") {
+      timer.collectionSettings[0] = true;
+      timer.endStateRelay.isUseSetting = false;
+    } else if (endStateValue === "output") {
+      timer.collectionSettings[1] = true;
+      timer.endStateRelay.isUseSetting = true;
+
+      const relaySelect = document.getElementById(`endRelaySelect${index}`);
+      const modeSelect = document.getElementById(`endModeSelect${index}`);
+      if (relaySelect) timer.endStateRelay.relayId = parseInt(relaySelect.value);
+      if (modeSelect) timer.endStateRelay.statePin = (modeSelect.value === "on");
+    } else {
+
+      timer.endStateRelay.isUseSetting = false;
+    }
+  }
+
+  sendSettingsToServer('timers');
+  showBalloon("Timer settings saved successfully!");
+  toggleTimerDetails(index);
+}
+
+function getCheckedRadioValue(name) {
+  const radios = document.getElementsByName(name);
+  for (const radio of radios) {
+    if (radio.checked) {
+      return radio.value;
+    }
+  }
+  return null;
+}
+
+function closeTimerSettings(index) {
+  renderTimers();
+}
+
+function updateTimersFromServer(updatedDeviceSettings) {
+  if (updatedDeviceSettings.timers) {
+    deviceSettings.timers = updatedDeviceSettings.timers;
+    deviceSettings.isTimersEnabled = updatedDeviceSettings.isTimersEnabled;
+    deviceSettings.isEncyclateTimers = updatedDeviceSettings.isEncyclateTimers;
+
+    renderTimers();
+    updateSpecificUIElement('isTimersEnabled', deviceSettings.isTimersEnabled);
+    updateSpecificUIElement('isEncyclateTimers', deviceSettings.isEncyclateTimers);
+
+  }
+}
+
+function generateRelayOptions(selectedRelayId) {
+  if (!deviceSettings.relays) return '<option value="-1">Реле не настроены</option>';
+  return deviceSettings.relays
+    .filter(relay => relay.isOutput)
+    .map(relay =>
+      `<option value="${relay.id}" ${relay.id === selectedRelayId ? 'selected' : ''}>${relay.description || `Реле ID: ${relay.id}`}</option>`
+    ).join('');
+}
+
+function renderTimers() {
+  const container = document.getElementById("timersContainer");
+  if (!deviceSettings.timers || deviceSettings.timers.length === 0) {
+    container.innerHTML = '<div class="user-item">Таймеры не добавлены</div>';
+    return;
+  }
+
+  container.innerHTML = deviceSettings.timers.map((timer, index) => {
+    const isInitialStateOutput = timer.initialStateRelay?.isUseSetting;
+
+    const collectionSettings = timer.collectionSettings || [];
+    let selectedEndStateRadio = 2;
+    if (collectionSettings[0]) {
+      selectedEndStateRadio = 0;
+    } else if (collectionSettings[1]) {
+      selectedEndStateRadio = 1;
+    }
+    const isEndStateOutput = (selectedEndStateRadio === 1);
+
+    return `
+    <div class="network-item">
+      <div class="network-header" onclick="toggleTimerDetails(${index})">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>${index + 1}.</strong>
+            <span class="timer-countdown" id="timerCountdown-${index}">00:00:00</span>
+            <input type="time" id="timer-time-input-${index}" step="1" value="${timer.time}"
+                   onchange="updateTimerTime(${index}, this.value)"
+                   style="width: 100px; margin: 0 10px;" onclick="event.stopPropagation()">
+          </div>
+        </div>
+        <div class="network-actions-header">
+          <button type="button" onclick="copyTimer(${index}); event.stopPropagation()" class="secondary">⧉</button>
+          <button type="button" onclick="removeTimer(${index}); event.stopPropagation()" class="delete">✕</button>
+          <label class="switch">
+            <input type="checkbox" ${timer.isUseSetting ? "checked" : ""}
+              onchange="updateDeviceProperty('timers.${index}.isUseSetting', this.checked); event.stopPropagation()">
+            <span class="slider"></span>
+          </label>
+          <span class="network-arrow" id="timerArrow-${index}">▼</span>
+        </div>
+      </div>
+      <div id="timerDetails-${index}" class="network-details" style="display: none;">
+        <div class="network-form">
+          <div class="form-row">
+            <h4>Начальное состояние</h4>
+            <div class="checkbox-group">
+              <label><input type="radio" name="initialState${index}" value="output"
+                     ${isInitialStateOutput ? 'checked="checked"' : ''}
+                     onchange="handleInitialStateChange(${index}, true)"> Установить выход</label>
+            </div>
+            <div class="checkbox-group">
+              <label><input type="radio" name="initialState${index}" value="none"
+                     ${!isInitialStateOutput ? 'checked="checked"' : ''}
+                     onchange="handleInitialStateChange(${index}, false)"> Без изменений</label>
+            </div>
+
+            <div id="initial-options-${index}" style="display: ${isInitialStateOutput ? 'block' : 'none'};">
+              <div class="form-row">
+                <label>Выход:</label>
+                <select id="initialRelaySelect${index}">
+                  ${generateRelayOptions(timer.initialStateRelay.relayId)}
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Режим:</label>
+                <select id="initialModeSelect${index}">
+                  <option value="on" ${timer.initialStateRelay.statePin ? 'selected="selected"' : ''}>Включить</option>
+                  <option value="off" ${!timer.initialStateRelay.statePin ? 'selected="selected"' : ''}>Выключить</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <h4>Конечное состояние</h4>
+            <div class="checkbox-group">
+              <label><input type="radio" name="endState${index}" value="tempControl"
+                     ${selectedEndStateRadio === 0 ? 'checked="checked"' : ''}
+                     onchange="handleEndStateChange(${index}, 0)"> Управление температурой</label>
+            </div>
+            <div class="checkbox-group">
+              <label><input type="radio" name="endState${index}" value="output"
+                     ${selectedEndStateRadio === 1 ? 'checked="checked"' : ''}
+                     onchange="handleEndStateChange(${index}, 1)"> Установить выход</label>
+            </div>
+            <div class="checkbox-group">
+              <label><input type="radio" name="endState${index}" value="none"
+                     ${selectedEndStateRadio === 2 ? 'checked="checked"' : ''}
+                     onchange="handleEndStateChange(${index}, 2)"> Без изменений</label>
+            </div>
+
+            <!-- === ИСПРАВЛЕННЫЙ БЛОК КОНЕЧНОГО СОСТОЯНИЯ === -->
+            <div id="end-options-${index}" style="display: ${isEndStateOutput ? 'block' : 'none'};">
+              <div class="form-row">
+                <label>Выход:</label>
+                <select id="endRelaySelect${index}"> <!-- Добавлен уникальный id -->
+                  ${generateRelayOptions(timer.endStateRelay?.relayId || 0)}
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Режим:</label>
+                <select id="endModeSelect${index}"> <!-- Добавлен уникальный id -->
+                  <option value="on" ${timer.endStateRelay?.statePin ? 'selected="selected"' : ''}>Включить</option>
+                  <option value="off" ${!timer.endStateRelay?.statePin ? 'selected="selected"' : ''}>Выключить</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" onclick="saveTimerSettings(${index})" class="primary">Сохранить</button>
+            <button type="button" onclick="closeTimerSettings(${index})" class="secondary">Отменить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+function addSchedule() {
+  const newSchedule = {
+    description: `Расписание ${(deviceSettings.scheduleScenarios?.length || 0) + 1}`,
+    isUseSetting: false,
+
+    collectionSettings: [false, false, true, false],
+    startDate: new Date().toISOString().split('T')[0],
+    endDate: "2150-12-31",
+    startEndTimes: [
+      { startTime: "08:00", endTime: "12:00" },
+      { startTime: "13:00", endTime: "17:00" }
+    ],
+    week: Array(7).fill(true),
+    months: Array(12).fill(true),
+    initialStateRelay: {
+      isUseSetting: true,
+      relayId: 0,
+      statePin: true,
+      lastState: false,
+      description: "Initial Schedule Power"
+    },
+    endStateRelay: {
+      isUseSetting: true,
+      relayId: 0,
+      statePin: false,
+      lastState: false,
+      description: "End Schedule Power"
+    }
+  };
+
+  if (!deviceSettings.scheduleScenarios) deviceSettings.scheduleScenarios = [];
+  deviceSettings.scheduleScenarios.push(newSchedule);
+
+  sendSettingsToServer('scheduleScenarios');
+  renderSchedules();
+  setTimeout(() => toggleScheduleDetails(deviceSettings.scheduleScenarios.length - 1), 100);
+}
+
+function removeSchedule(index) {
+  if (confirm('Удалить это расписание?')) {
+    deviceSettings.scheduleScenarios.splice(index, 1);
+    sendSettingsToServer('scheduleScenarios');
+    renderSchedules();
+  }
+}
+
+function copySchedule(index) {
+  const scheduleToCopy = deviceSettings.scheduleScenarios[index];
+  const newSchedule = JSON.parse(JSON.stringify(scheduleToCopy));
+
+  newSchedule.description = generateUniqueName(newSchedule.description, deviceSettings.scheduleScenarios, "description", true);
+
+  deviceSettings.scheduleScenarios.push(newSchedule);
+  sendSettingsToServer('scheduleScenarios');
+  renderSchedules();
+  setTimeout(() => toggleScheduleDetails(deviceSettings.scheduleScenarios.length - 1), 100);
+}
+
+function deleteAllSchedules() {
+  if (!deviceSettings.scheduleScenarios || deviceSettings.scheduleScenarios.length === 0) {
+    showBalloon("Нет расписаний для удаления", true);
+    return;
+  }
+  if (confirm('Вы уверены, что хотите удалить ВСЕ расписания?')) {
+    deviceSettings.scheduleScenarios = [];
+    sendSettingsToServer('scheduleScenarios');
+    renderSchedules();
+  }
+}
+
+function toggleScheduleDetails(index) {
+  const details = document.getElementById(`scheduleDetails-${index}`);
+  const arrow = document.getElementById(`scheduleArrow-${index}`);
+
+  if (details.style.display === 'none' || !details.style.display) {
+    details.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    details.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function handleInitialScheduleChange(index, stateIndex) {
+
+  const optionsContainer = document.getElementById(`initial-schedule-options-${index}`);
+  if (optionsContainer) {
+    optionsContainer.style.display = (stateIndex === 2) ? 'block' : 'none';
+  }
+}
+
+function handleEndScheduleChange(index, isUseSetting) {
+  const optionsContainer = document.getElementById(`end-schedule-options-${index}`);
+  if (optionsContainer) {
+    optionsContainer.style.display = isUseSetting ? 'block' : 'none';
+  }
+}
+
+function updateScheduleArrayProperty(scheduleIndex, arrayName, itemIndex, value) {
+  if (!deviceSettings.scheduleScenarios[scheduleIndex]) return;
+  deviceSettings.scheduleScenarios[scheduleIndex][arrayName][itemIndex] = value;
+  sendSettingsToServer('scheduleScenarios');
+}
+
+function addTimeInterval(scheduleIndex) {
+
+  if (!deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes) {
+    deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes = [];
+  }
+
+  const newInterval = { startTime: "08:00", endTime: "18:00" };
+  deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes.push(newInterval);
+
+  const container = document.getElementById(`timeIntervals-${scheduleIndex}`);
+  if (!container) return;
+
+  const intervals = deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes;
+  container.innerHTML = intervals.map((interval, i) => `
+    <div class="form-row time-interval-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+      <input type="time" name="startTime" value="${interval.startTime}">
+      <span> - </span>
+      <input type="time" name="endTime" value="${interval.endTime}">
+      <button type="button" onclick="removeTimeInterval(${scheduleIndex}, ${i})" class="delete" style="padding: 4px 8px;">✕</button>
+    </div>
+  `).join('');
+
+  sendSettingsToServer('timers');
+}
+
+function removeTimeInterval(scheduleIndex, intervalIndex) {
+
+  if (
+    !deviceSettings.scheduleScenarios[scheduleIndex] ||
+    !deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes ||
+    intervalIndex >= deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes.length
+  ) {
+    console.error("Invalid schedule or interval index");
+    return;
+  }
+
+  deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes.splice(intervalIndex, 1);
+
+  const container = document.getElementById(`timeIntervals-${scheduleIndex}`);
+  if (!container) return;
+
+  const intervals = deviceSettings.scheduleScenarios[scheduleIndex].startEndTimes;
+  container.innerHTML = intervals.map((interval, i) => `
+    <div class="form-row time-interval-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+      <input type="time" name="startTime" value="${interval.startTime}">
+      <span> - </span>
+      <input type="time" name="endTime" value="${interval.endTime}">
+      <button type="button" onclick="removeTimeInterval(${scheduleIndex}, ${i})" class="delete" style="padding: 4px 8px;">✕</button>
+    </div>
+  `).join('');
+
+  sendSettingsToServer('timers');
+}
+
+function saveScheduleSettings(index) {
+  const details = document.getElementById(`scheduleDetails-${index}`);
+  if (!details || !deviceSettings.scheduleScenarios[index]) return;
+
+  const schedule = deviceSettings.scheduleScenarios[index];
+
+  schedule.description = details.querySelector('input[name="description"]').value;
+  schedule.startDate = details.querySelector('input[name="startDate"]').value;
+  schedule.endDate = details.querySelector('input[name="endDate"]').value;
+
+  const intervalRows = details.querySelectorAll('.time-interval-row');
+  schedule.startEndTimes = Array.from(intervalRows).map(row => ({
+    startTime: row.querySelector('input[name="startTime"]').value,
+    endTime: row.querySelector('input[name="endTime"]').value,
+  }));
+
+  const initialAction = details.querySelector(`input[name="initialAction${index}"]:checked`);
+  if (initialAction) {
+    schedule.collectionSettings.fill(false);
+    const stateIndex = parseInt(initialAction.value);
+    schedule.collectionSettings[stateIndex] = true;
+    schedule.initialStateRelay.isUseSetting = (stateIndex === 2);
+
+    if (schedule.initialStateRelay.isUseSetting) {
+
+      const relaySelect = details.querySelector(`#initial-schedule-options-${index} select[name="relay"]`);
+      const modeSelect = details.querySelector(`#initial-schedule-options-${index} select[name="mode"]`);
+      if (relaySelect) schedule.initialStateRelay.relayId = parseInt(relaySelect.value);
+      if (modeSelect) schedule.initialStateRelay.statePin = (modeSelect.value === "on");
+    }
+  }
+
+  const endAction = details.querySelector(`input[name="endAction${index}"]:checked`);
+  if (endAction) {
+    schedule.endStateRelay.isUseSetting = (endAction.value === "output");
+    if (schedule.endStateRelay.isUseSetting) {
+
+      const relaySelect = details.querySelector(`#end-schedule-options-${index} select[name="relay"]`);
+      const modeSelect = details.querySelector(`#end-schedule-options-${index} select[name="mode"]`);
+      if (relaySelect) schedule.endStateRelay.relayId = parseInt(relaySelect.value);
+      if (modeSelect) schedule.endStateRelay.statePin = (modeSelect.value === "on");
+    }
+  }
+
+  sendSettingsToServer('scheduleScenarios');
+  showBalloon("Schedule settings saved successfully!");
+  toggleScheduleDetails(index);
+}
+
+function closeScheduleSettings(index) {
+  renderSchedules();
+}
+
+function renderSchedules() {
+  const container = document.getElementById("schedulesContainer");
+  if (!deviceSettings.scheduleScenarios || deviceSettings.scheduleScenarios.length === 0) {
+    container.innerHTML = '<div class="user-item">Расписания не добавлены</div>';
+    return;
+  }
+
+  container.innerHTML = deviceSettings.scheduleScenarios.map((schedule, index) => {
+    const initialActionIndex = schedule.collectionSettings?.findIndex(s => s) ?? 2;
+    const isEndStateOutput = schedule.endStateRelay?.isUseSetting ?? false;
+
+    return `
+    <div class="network-item">
+      <div class="network-header" onclick="toggleScheduleDetails(${index})">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>${index + 1}.</strong>
+            <span>${schedule.description}</span>
+          </div>
+        </div>
+        <div class="network-actions-header">
+          <button type="button" onclick="copySchedule(${index}); event.stopPropagation()" class="secondary">⧉</button>
+          <button type="button" onclick="removeSchedule(${index}); event.stopPropagation()" class="delete">✕</button>
+          <label class="switch">
+            <input type="checkbox" ${schedule.isUseSetting ? "checked" : ""}
+              onchange="updateDeviceProperty('scheduleScenarios.${index}.isUseSetting', this.checked); event.stopPropagation()">
+            <span class="slider"></span>
+          </label>
+          <span class="network-arrow" id="scheduleArrow-${index}">▼</span>
+        </div>
+      </div>
+      <div id="scheduleDetails-${index}" class="network-details" style="display: none;">
+        <div class="network-form">
+          ${renderScheduleDetails(schedule, index, initialActionIndex, isEndStateOutput)}
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+function renderScheduleDetails(schedule, index, initialActionIndex, isEndStateOutput) {
+  return `
+    <div class="form-row">
+      <label>Название:</label>
+      <input type="text" name="description" value="${schedule.description}"
+             onblur="handleScheduleNameChange(${index}, this)">
+    </div>
+    <div class="form-row">
+      <label>Период:</label>
+      <input type="date" name="startDate" value="${schedule.startDate}">
+      <span> по </span>
+      <input type="date" name="endDate" value="${schedule.endDate}">
+    </div>
+
+    <!-- ИСПРАВЛЕННЫЙ БЛОК ВРЕМЕННЫХ ИНТЕРВАЛОВ -->
+    <div class="form-row" style="display: flex; flex-direction: row; align-items: center; gap: 20px;">
+      <h4 style="margin: 0;">Временные интервалы</h4>
+      <button type="button" onclick="addTimeInterval(${index})" class="secondary">➕</button>
+    </div>
+    <div id="timeIntervals-${index}">
+      ${schedule.startEndTimes.map((interval, i) => `
+        <div class="form-row time-interval-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+          <input type="time" name="startTime" value="${interval.startTime}">
+          <span> - </span>
+          <input type="time" name="endTime" value="${interval.endTime}">
+          <button type="button" onclick="removeTimeInterval(${index}, ${i})" class="delete" style="padding: 4px 8px;">✕</button>
+        </div>
+      `).join('')}
+    </div>
+
+    ${renderCheckboxDropdown('Дни недели', ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], schedule.week, index, 'week')}
+    ${renderCheckboxDropdown('Месяцы', ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'], schedule.months, index, 'months')}
+
+    <div class="form-row">
+      <h4>Начальное состояние</h4>
+      <div class="checkbox-group" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+        <label><input type="radio" name="initialAction${index}" value="0" ${initialActionIndex === 0 ? 'checked' : ''} onchange="handleInitialScheduleChange(${index}, 0)"> Управление температурой</label>
+        <label><input type="radio" name="initialAction${index}" value="1" ${initialActionIndex === 1 ? 'checked' : ''} onchange="handleInitialScheduleChange(${index}, 1)"> Управление таймерами</label>
+        <label><input type="radio" name="initialAction${index}" value="2" ${initialActionIndex === 2 ? 'checked' : ''} onchange="handleInitialScheduleChange(${index}, 2)"> Состояние выхода</label>
+        <label><input type="radio" name="initialAction${index}" value="3" ${initialActionIndex === 3 ? 'checked' : ''} onchange="handleInitialScheduleChange(${index}, 3)"> Ничего</label>
+      </div>
+      <div id="initial-schedule-options-${index}" style="display: ${initialActionIndex === 2 ? 'block' : 'none'};">
+        <div class="form-row">
+          <label>Выход:</label>
+          <select name="relay">
+            ${generateRelayOptions(schedule.initialStateRelay.relayId)} <!-- ИЗМЕНЕНО: было relayIndex, теперь relayId -->
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Режим:</label>
+          <select name="mode">
+            <option value="on" ${schedule.initialStateRelay.statePin ? 'selected' : ''}>Включить</option>
+            <option value="off" ${!schedule.initialStateRelay.statePin ? 'selected' : ''}>Выключить</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <h4>Конечное состояние</h4>
+      <div class="checkbox-group" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+        <label><input type="radio" name="endAction${index}" value="output" ${isEndStateOutput ? 'checked' : ''} onchange="handleEndScheduleChange(${index}, true)"> Состояние выхода</label>
+        <label><input type="radio" name="endAction${index}" value="none" ${!isEndStateOutput ? 'checked' : ''} onchange="handleEndScheduleChange(${index}, false)"> Ничего</label>
+      </div>
+      <div id="end-schedule-options-${index}" style="display: ${isEndStateOutput ? 'block' : 'none'};">
+        <div class="form-row">
+          <label>Выход:</label>
+          <select name="relay">
+            ${generateRelayOptions(schedule.endStateRelay.relayId)} <!-- ИЗМЕНЕНО: было relayIndex, теперь relayId -->
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Режим:</label>
+          <select name="mode">
+            <option value="on" ${schedule.endStateRelay.statePin ? 'selected' : ''}>Включить</option>
+            <option value="off" ${!schedule.endStateRelay.statePin ? 'selected' : ''}>Выключить</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" onclick="saveScheduleSettings(${index})" class="primary">Сохранить</button>
+      <button type="button" onclick="closeScheduleSettings(${index})" class="secondary">Отменить</button>
+    </div>
+  `;
+}
+
+function updateSchedulesFromServer(updatedDeviceSettings) {
+  if (updatedDeviceSettings.scheduleScenarios) {
+    deviceSettings.scheduleScenarios = updatedDeviceSettings.scheduleScenarios;
+    deviceSettings.isScheduleEnabled = updatedDeviceSettings.isScheduleEnabled;
+
+    renderSchedules();
+    updateSpecificUIElement('isScheduleEnabled', deviceSettings.isScheduleEnabled);
+
+  }
+}
+
+function handleScheduleNameChange(index, inputElement) {
+  const newName = inputElement.value.trim();
+  if (!newName) return;
+
+  const currentName = deviceSettings.scheduleScenarios[index].description;
+  if (newName === currentName) return;
+
+  const nameExists = deviceSettings.scheduleScenarios.some((s, i) => s.description === newName && i !== index);
+
+  let finalName = newName;
+  if (nameExists) {
+    finalName = generateUniqueName(newName, deviceSettings.scheduleScenarios, "description", true);
+    inputElement.value = finalName;
+    showBalloon(`Имя "${newName}" уже существует. Изменено на "${finalName}"`, true);
+  }
+
+  deviceSettings.scheduleScenarios[index].description = finalName;
+
+  const scheduleItem = document.getElementById(`scheduleDetails-${index}`).closest('.network-item');
+  if (scheduleItem) {
+    const titleElement = scheduleItem.querySelector('.network-title');
+
+    const scheduleNumber = index + 1;
+    titleElement.innerHTML = `<strong>${scheduleNumber}.</strong> <span>${finalName}</span>`;
+  }
+
+  sendSettingsToServer('scheduleScenarios');
+}
+
+function generateSensorOptions(selectedIndex) {
+  if (!deviceSettings.sensors || deviceSettings.sensors.length === 0) {
+    return '<option value="0">Сенсоры не настроены</option>';
+  }
+  return deviceSettings.sensors
+    .filter(sensor => sensor.isUseSetting)
+    .map((sensor, index) => {
+      const realIndex = deviceSettings.sensors.findIndex(s => s === sensor);
+      return `<option value="${realIndex}" ${realIndex === selectedIndex ? 'selected' : ''}>${sensor.description || `Сенсор ${index + 1}`}</option>`;
+    })
+    .join('');
+}
+
+function generatePidOptions(selectedIndex) {
+  if (!deviceSettings.pids || deviceSettings.pids.length === 0) {
+    return '<option value="0">ПИД-регуляторы не настроены</option>';
+  }
+  return deviceSettings.pids
+    .map((pid, index) =>
+      `<option value="${index}" ${index === selectedIndex ? 'selected' : ''}>${pid.description || `ПИД ${index + 1}`}</option>`
+    )
+    .join('');
+}
+
+function renderTemperatureControl() {
+  const container = document.getElementById("temperatureContainer");
+  if (!container) return;
+
+  const temp = deviceSettings.temperature || {};
+
+  const actionIndex = temp.collectionSettings?.findIndex(s => s) ?? -1;
+  const isRelayAction = (actionIndex === 0);
+
+  container.innerHTML = `
+ <div class="form-row" style="flex-direction: row; align-items: center;">
+      <label>Текущая температура:</label>
+      <span id="temp-current-value-display" style="font-size: 1.2em; font-weight: bold; color: green;">
+        -/- °C
+      </span>
+    </div>
+
+    <div class="form-row" style="flex-direction: row; align-items: center; gap: 5px;">
+      <label>Установить температуру:</label>
+      <input type="number" value="${temp.setTemperature ?? 25}"
+             onchange="updateDeviceProperty('temperature.setTemperature', parseInt(this.value))">
+      <span>°C</span>
+    </div>
+
+    <div class="form-row">
+      <h4>Режим регулирования</h4>
+      <div class="checkbox-group">
+        <label><input type="radio" name="tempMode" value="smoothly" ${temp.isSmoothly ? 'checked' : ''}
+               onchange="updateDeviceProperty('temperature.isSmoothly', true)"> Плавно (PWM)</label>
+        <label><input type="radio" name="tempMode" value="onoff" ${!temp.isSmoothly ? 'checked' : ''}
+               onchange="updateDeviceProperty('temperature.isSmoothly', false)"> Вкл/Выкл</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <h4>Направление</h4>
+      <div class="checkbox-group">
+        <label><input type="radio" name="tempDirection" value="increase" ${temp.isIncrease ? 'checked' : ''}
+               onchange="updateDeviceProperty('temperature.isIncrease', true)"> На повышение (нагрев)</label>
+        <label><input type="radio" name="tempDirection" value="decrease" ${!temp.isIncrease ? 'checked' : ''}
+               onchange="updateDeviceProperty('temperature.isIncrease', false)"> На понижение (охлаждение)</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Сенсор:</label>
+      <select onchange="updateDeviceProperty('temperature.sensorId', parseInt(this.value))">
+        ${generateSensorOptions(temp.sensorId)}
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label>Настройки ПИД:</label>
+      <select onchange="updateDeviceProperty('temperature.selectedPidIndex', parseInt(this.value))">
+        ${generatePidOptions(temp.selectedPidIndex)}
+      </select>
+    </div>
+
+    <div class="form-row">
+      <h4>Действие при срабатывании</h4>
+      <div class="checkbox-group">
+        <label><input type="radio" name="tempAction" value="0" ${actionIndex === 0 ? 'checked' : ''}
+               onchange="handleTempActionChange(0)"> Управлять выходом реле</label>
+        <label><input type="radio" name="tempAction" value="1" ${actionIndex === 1 ? 'checked' : ''}
+               onchange="handleTempActionChange(1)"> Активировать/деактивировать таймеры</label>
+      </div>
+
+      <div id="temp-relay-options" style="display: ${isRelayAction ? 'block' : 'none'}; margin-top: 10px;">
+        <label>Реле:</label>
+        <select onchange="updateDeviceProperty('temperature.relayId', parseInt(this.value))">
+          ${generateRelayOptions(temp.relayId)}
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function handleTempActionChange(actionIndex) {
+
+  deviceSettings.temperature.collectionSettings = [false, false, false, false];
+  deviceSettings.temperature.collectionSettings[actionIndex] = true;
+
+  const optionsContainer = document.getElementById('temp-relay-options');
+  if (optionsContainer) {
+    optionsContainer.style.display = (actionIndex === 0) ? 'block' : 'none';
+  }
+
+  sendSettingsToServer('temperature');
+}
+
+function saveTemperatureSettings(event) {
+
+  event.preventDefault();
+
+  sendSettingsToServer('temperature');
+
+  originalTemperatureSettings = JSON.parse(JSON.stringify(deviceSettings.temperature));
+
+  renderTemperatureControl();
+
+  showBalloon("Настройки температуры сохранены!");
+
+  toggleDeviceSection('temperature-section');
+}
+
+function closeTemperatureSettings(event) {
+
+  event.preventDefault();
+
+  if (originalTemperatureSettings) {
+
+    deviceSettings.temperature = JSON.parse(JSON.stringify(originalTemperatureSettings));
+
+    sendSettingsToServer('temperature');
+
+    renderTemperatureControl();
+
+    toggleDeviceSection('temperature-section');
+
+  }
+}
+
+let originalTemperatureSettings = null;
+
+function updateTemperatureFromServer(updatedDeviceSettings) {
+  if (updatedDeviceSettings.temperature) {
+
+    originalTemperatureSettings = JSON.parse(JSON.stringify(updatedDeviceSettings.temperature));
+
+    deviceSettings.temperature = updatedDeviceSettings.temperature;
+
+    renderTemperatureControl();
+
+    updateSpecificUIElement('temperature.isUseSetting', deviceSettings.temperature.isUseSetting);
+
+  }
+}
+
+function addPid() {
+  const newPid = {
+    description: `ПИД ${(deviceSettings.pids?.length || 0) + 1}`,
+    descriptionDetailed: "Подробное описание нового ПИД-регулятора",
+    Kp: 10.0,
+    Ki: 0.5,
+    Kd: 2.0
+  };
+
+  if (!deviceSettings.pids) deviceSettings.pids = [];
+  deviceSettings.pids.push(newPid);
+
+  sendSettingsToServer('pids');
+  renderPids();
+  setTimeout(() => togglePidDetails(deviceSettings.pids.length - 1), 100);
+}
+
+function removePid(index) {
+  if (confirm('Удалить эту настройку ПИД?')) {
+    deviceSettings.pids.splice(index, 1);
+    sendSettingsToServer('pids');
+    renderPids();
+  }
+}
+
+function copyPid(index) {
+  const pidToCopy = deviceSettings.pids[index];
+  const newPid = JSON.parse(JSON.stringify(pidToCopy));
+  newPid.description = generateUniqueName(newPid.description, deviceSettings.pids, "description", true);
+
+  deviceSettings.pids.push(newPid);
+  sendSettingsToServer('pids');
+  renderPids();
+  setTimeout(() => togglePidDetails(deviceSettings.pids.length - 1), 100);
+}
+
+function togglePidDetails(index) {
+  const details = document.getElementById(`pidDetails-${index}`);
+  const arrow = document.getElementById(`pidArrow-${index}`);
+
+  if (details.style.display === 'none' || !details.style.display) {
+    details.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    details.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function savePidSettings(index) {
+  const details = document.getElementById(`pidDetails-${index}`);
+  if (!details || !deviceSettings.pids[index]) return;
+
+  const pid = deviceSettings.pids[index];
+
+  pid.description = details.querySelector('input[name="description"]').value;
+  pid.descriptionDetailed = details.querySelector('textarea[name="descriptionDetailed"]').value;
+  pid.Kp = parseFloat(details.querySelector('input[name="Kp"]').value) || 0;
+  pid.Ki = parseFloat(details.querySelector('input[name="Ki"]').value) || 0;
+  pid.Kd = parseFloat(details.querySelector('input[name="Kd"]').value) || 0;
+
+  sendSettingsToServer('pids');
+  showBalloon("PID settings saved successfully!");
+  togglePidDetails(index);
+}
+
+function closePidSettings(index) {
+  renderPids();
+}
+
+function renderPids() {
+  const container = document.getElementById("pidsContainer");
+  if (!deviceSettings.pids || deviceSettings.pids.length === 0) {
+    container.innerHTML = '<div class="user-item">Настройки ПИД не добавлены</div>';
+    return;
+  }
+
+  container.innerHTML = deviceSettings.pids.map((pid, index) => `
+    <div class="network-item">
+      <div class="network-header" onclick="togglePidDetails(${index})">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>${index + 1}.</strong>
+            <span>${pid.description}</span>
+          </div>
+        </div>
+        <div class="network-actions-header">
+          <button type="button" onclick="copyPid(${index}); event.stopPropagation()" class="secondary">⧉</button>
+          <button type="button" onclick="removePid(${index}); event.stopPropagation()" class="delete">✕</button>
+          <span class="network-arrow" id="pidArrow-${index}">▼</span>
+        </div>
+      </div>
+      <div id="pidDetails-${index}" class="network-details" style="display: none;">
+        <div class="network-form">
+          <div class="form-row">
+  <label>Краткое название:</label>
+  <input type="text" name="description" value="${pid.description}" maxlength="100">
+</div>
+<div class="form-row">
+  <label>Детальное описание:</label>
+  <textarea name="descriptionDetailed" rows="3" maxlength="350">${pid.descriptionDetailed}</textarea>
+</div>
+          <div class="form-row">
+            <label>Пропорциональный (Kp):</label>
+            <input type="number" name="Kp" step="any" value="${pid.Kp}">
+          </div>
+          <div class="form-row">
+            <label>Интегральный (Ki):</label>
+            <input type="number" name="Ki" step="any" value="${pid.Ki}">
+          </div>
+          <div class="form-row">
+            <label>Дифференциальный (Kd):</label>
+            <input type="number" name="Kd" step="any" value="${pid.Kd}">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" onclick="savePidSettings(${index})" class="primary">Сохранить</button>
+            <button type="button" onclick="closePidSettings(${index})" class="secondary">Отменить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updatePidsFromServer(updatedDeviceSettings) {
+  if (updatedDeviceSettings.pids) {
+    deviceSettings.pids = updatedDeviceSettings.pids;
+    renderPids();
+
+  }
+}
+
+function addSensorAction() {
+    const availableInputs = deviceSettings.relays?.filter(r => !r.isOutput) || [];
+    if (availableInputs.length === 0) {
+        showBalloon("Нет доступных физических входов для создания действия", true);
+        return;
+    }
+
+    const firstSensorIndex = deviceSettings.sensors.length > 0 ? 0 : -1;
+    const availableOutputs = deviceSettings.relays?.filter(r => r.isOutput) || [];
+    const defaultOutputRelayId = availableOutputs.length > 0 ? availableOutputs[0].id : 0;
+
+    const baseActionName = "Новое действие";
+    const uniqueDescription = generateUniqueName(baseActionName, deviceSettings.actions, "description");
+
+    const newAction = {
+        description: uniqueDescription,
+        isUseSetting: false,
+        targetSensorId: firstSensorIndex,
+        triggerValueMax: 25.0,
+        triggerValueMin: 23.0,
+        isHumidity: false,
+        actionMoreOrEqual: true,
+        collectionSettings: [false, true, false, false],
+        outputs: [
+            { isUseSetting: true, relayId: defaultOutputRelayId, statePin: true, lastState: false, isReturn: false, description: "Action Output" }
+        ],
+        sendMsg: "",
+        isReturnSetting: false
+    };
+
+    if (!deviceSettings.actions) deviceSettings.actions = [];
+    deviceSettings.actions.push(newAction);
+
+    sendSettingsToServer('actions');
+    renderSensorActions();
+    setTimeout(() => toggleSensorActionDetails(deviceSettings.actions.length - 1), 100);
+}
+
+function removeSensorAction(index) {
+  if (confirm('Удалить это действие?')) {
+    deviceSettings.actions.splice(index, 1);
+    sendSettingsToServer('actions');
+    renderSensorActions();
+  }
+}
+
+function copySensorAction(index, event) {
+    if (event) event.stopPropagation();
+
+    const actionToCopy = deviceSettings.actions[index];
+    const newAction = JSON.parse(JSON.stringify(actionToCopy));
+
+    newAction.description = generateUniqueName(newAction.description, deviceSettings.actions, "description", true);
+
+    deviceSettings.actions.push(newAction);
+    sendSettingsToServer('actions');
+    renderSensorActions();
+    setTimeout(() => toggleSensorActionDetails(deviceSettings.actions.length - 1), 100);
+}
+
+function toggleSensorActionDetails(index) {
+  const details = document.getElementById(`sensorActionDetails-${index}`);
+  const arrow = document.getElementById(`sensorActionArrow-${index}`);
+
+  if (details.style.display === 'none' || !details.style.display) {
+    details.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    details.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function handleSensorActionTypeChange(index, settingIndex) {
+  const outputsContainer = document.getElementById(`sensor-outputs-container-${index}`);
+  if (outputsContainer) {
+    outputsContainer.style.display = (settingIndex === 1) ? 'block' : 'none';
+  }
+
+  const messageContainer = document.getElementById(`sensor-message-container-${index}`);
+  if (messageContainer) {
+    messageContainer.style.display = (settingIndex === 3) ? 'block' : 'none';
+  }
+
+  const returnSettingContainer = document.getElementById(`sensor-return-setting-container-${index}`);
+  if (returnSettingContainer) {
+    returnSettingContainer.style.display = (settingIndex === 0 || settingIndex === 2) ? 'block' : 'none';
+  }
+}
+
+function handleSensorChangeForAction(index, sensorId) {
+    updateDeviceProperty(`actions.${index}.targetSensorId`, parseInt(sensorId));
+
+    const selectedSensor = deviceSettings.sensors.find(s => s.sensorId === parseInt(sensorId));
+    const isDht = isDhtSensor(selectedSensor);
+    const dataTypeContainer = document.getElementById(`sensor-data-type-container-${index}`);
+    if (dataTypeContainer) {
+        dataTypeContainer.style.display = isDht ? 'flex' : 'none';
+    }
+}
+
+function isDhtSensor(sensor) {
+    if (!sensor || !sensor.typeSensor) return false;
+
+    const isDht11 = sensor.typeSensor[0];
+    const isDht22 = sensor.typeSensor[1];
+
+    return isDht11 || isDht22;
+}
+
+function generateSensorOptionsForActions(selectedSensorId) {
+  if (!deviceSettings.sensors || deviceSettings.sensors.length === 0) {
+    return '<option value="-1">Сенсоры не настроены</option>';
+  }
+
+  return deviceSettings.sensors
+    .map((sensor, index) => {
+
+      const isSelected = (sensor.sensorId === selectedSensorId);
+      return `<option value="${sensor.sensorId}" ${isSelected ? 'selected' : ''}>${sensor.description || `Сенсор ${index + 1} (ID: ${sensor.sensorId})`}</option>`;
+    })
+    .join('');
+}
+
+function addSensorOutput(sensorIndex) {
+  if (!deviceSettings.actions || !deviceSettings.actions[sensorIndex]) {
+    console.error("addSensorOutput: Неверный индекс действия или данные отсутствуют.");
+    showBalloon("Ошибка: не удалось добавить выход", true);
+    return;
+  }
+
+  const action = deviceSettings.actions[sensorIndex];
+  if (!action.outputs || !Array.isArray(action.outputs)) {
+    action.outputs = [];
+  }
+
+  const newOutput = { isUseSetting: true, relayId: 0, statePin: true, lastState: false, isReturn: false, description: "Action Output" };
+  action.outputs.push(newOutput);
+
+  renderSensorOutputsList(sensorIndex);
+  sendSettingsToServer('actions');
+}
+
+function removeSensorOutput(sensorIndex, outputIndex) {
+  if (!deviceSettings.actions || !deviceSettings.actions[sensorIndex] || !deviceSettings.actions[sensorIndex].outputs) {
+    console.error("removeSensorOutput: Неверный индекс или отсутствует массив outputs.");
+    showBalloon("Ошибка: не удалось удалить выход", true);
+    return;
+  }
+
+  deviceSettings.actions[sensorIndex].outputs.splice(outputIndex, 1);
+  renderSensorOutputsList(sensorIndex);
+  sendSettingsToServer('actions');
+}
+
+function renderSensorOutputsList(sensorIndex) {
+  if (!deviceSettings.actions || !deviceSettings.actions[sensorIndex]) {
+    console.error("renderSensorOutputsList: Неверный индекс действия.");
+    return;
+  }
+
+  const action = deviceSettings.actions[sensorIndex];
+  const container = document.getElementById(`sensor-outputs-list-${sensorIndex}`);
+  if (!container) return;
+
+  if (!action.outputs || !Array.isArray(action.outputs)) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = action.outputs.map((output, i) => `
+    <div class="form-row sensor-output-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px; justify-content: flex-start; width: 100%;">
+      <select name="relay">
+        ${generateRelayOptions(output.relayId)}
+      </select>
+      <select name="mode">
+        <option value="on" ${output.statePin ? 'selected' : ''}>Включить</option>
+        <option value="off" ${!output.statePin ? 'selected' : ''}>Выключить</option>
+      </select>
+      <label style="display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" name="isReturn" ${output.isReturn ? 'checked' : ''}
+               onchange="updateDeviceProperty('actions.${sensorIndex}.outputs.${i}.isReturn', this.checked)">
+        Вернуть в исходное состояние
+      </label>
+      <button type="button" onclick="removeSensorOutput(${sensorIndex}, ${i})" class="delete" style="padding: 4px 8px;">✕</button>
+    </div>
+  `).join('');
+}
+
+function saveSensorActionSettings(index) {
+
+  if (!deviceSettings.actions[index]) return;
+
+  const action = deviceSettings.actions[index];
+
+  action.description = document.getElementById(`action-description-${index}`).value;
+  action.actionMoreOrEqual = (document.getElementById(`action-triggerCondition-${index}`).value === 'moreOrEqual');
+  action.triggerValueMax = parseFloat(document.getElementById(`action-triggerValueMax-${index}`).value) || 0;
+  action.triggerValueMin = parseFloat(document.getElementById(`action-triggerValueMin-${index}`).value) || 0;
+  action.isHumidity = (document.getElementById(`action-valueType-${index}`).value === 'humidity');
+  action.targetSensorId = parseInt(document.getElementById(`action-targetSensor-${index}`).value);
+
+  const details = document.getElementById(`sensorActionDetails-${index}`);
+  const actionTypeRadio = details.querySelector(`input[name="actionType${index}"]:checked`);
+  if (actionTypeRadio) {
+    action.collectionSettings = [false, false, false, false];
+    const typeIndex = parseInt(actionTypeRadio.value);
+    action.collectionSettings[typeIndex] = true;
+  }
+
+  const isReturnSettingCheckbox = document.getElementById(`action-isReturnSetting-${index}`);
+  if (isReturnSettingCheckbox) {
+    action.isReturnSetting = isReturnSettingCheckbox.checked;
+  }
+
+  const messageInput = document.getElementById(`action-sendMsg-${index}`);
+  if (messageInput) {
+    action.sendMsg = messageInput.value;
+  }
+
+  const outputRows = details.querySelectorAll('.sensor-output-row');
+  action.outputs = Array.from(outputRows).map(row => ({
+    isUseSetting: true,
+    relayId: parseInt(row.querySelector('select[name="relay"]').value),
+    statePin: (row.querySelector('select[name="mode"]').value === "on"),
+    lastState: false,
+    isReturn: row.querySelector('input[name="isReturn"]').checked,
+    description: "Action Output"
+  }));
+
+  sendSettingsToServer('actions');
+
+  showBalloon("Настройки действия сохранены!");
+  toggleSensorActionDetails(index);
+}
+
+function closeSensorActionSettings(index) {
+  renderSensorActions();
+}
+
+function renderSensorActions() {
+  const container = document.getElementById("sensorActionsContainer");
+  if (!deviceSettings.actions || deviceSettings.actions.length === 0) {
+    container.innerHTML = '<div class="user-item">Действия не добавлены</div>';
+    return;
+  }
+
+  container.innerHTML = deviceSettings.actions.map((action, index) => {
+    const actionTypeIndex = action.collectionSettings?.findIndex(s => s) ?? 1;
+    const isOutputAction = (actionTypeIndex === 1);
+    const isMessageAction = (actionTypeIndex === 3);
+    const showReturnSetting = (actionTypeIndex === 0 || actionTypeIndex === 2);
+
+    const targetSensor = deviceSettings.sensors.find(s => s.sensorId === action.targetSensorId);
+    const currentValue = targetSensor ? targetSensor.currentValue : -999;
+    const sensorError = (currentValue === -999 || isNaN(currentValue));
+
+    const isDht = isDhtSensor(targetSensor);
+
+    return `
+    <div class="network-item">
+
+      <div class="network-header" onclick="toggleSensorActionDetails(${index})">
+        <div class="network-main-info">
+          <div class="network-title">
+            <strong>${index + 1}.</strong>
+            <span>${action.description}</span>
+          </div>
+        </div>
+        <div class="network-actions-header">
+          <button type="button" onclick="copySensorAction(${index}); event.stopPropagation()" class="secondary">⧉</button>
+          <button type="button" onclick="removeSensorAction(${index}); event.stopPropagation()" class="delete">✕</button>
+          <label class="switch">
+            <input type="checkbox" ${action.isUseSetting ? "checked" : ""}
+              onchange="updateDeviceProperty('actions.${index}.isUseSetting', this.checked); event.stopPropagation()">
+            <span class="slider"></span>
+          </label>
+          <span class="network-arrow" id="sensorActionArrow-${index}">▼</span>
+        </div>
+      </div>
+
+      <div id="sensorActionDetails-${index}" class="network-details" style="display: none;">
+        <div class="network-form">
+          <div class="form-row">
+            <label>Текущее значение:</label>
+            <span id="action-current-value-${index}" style="font-size: 1.2em; font-weight: bold; color: ${sensorError ? 'red' : 'green'};">
+              ${sensorError ? 'Ошибка' : `${currentValue.toFixed(1)}`}
+            </span>
+          </div>
+          <div class="form-row">
+            <label>Название действия:</label>
+            <input type="text" id="action-description-${index}" name="description" value="${action.description}">
+          </div>
+
+          <div class="form-row">
+            <label>Сенсор для отслеживания:</label>
+            <select id="action-targetSensor-${index}" name="targetSensor" onchange="handleSensorChangeForAction(${index}, this.value)">
+              ${generateSensorOptionsForActions(action.targetSensorId)}
+            </select>
+          </div>
+
+          <div id="sensor-data-type-container-${index}" class="form-row" style="display: ${isDht ? 'flex' : 'none'};">
+            <label>Тип данных:</label>
+            <select id="action-valueType-${index}" name="valueType">
+              <option value="temperature" ${!action.isHumidity ? 'selected' : ''}>Температура</option>
+              <option value="humidity" ${action.isHumidity ? 'selected' : ''}>Влажность</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Сработать, если значение:</label>
+            <select id="action-triggerCondition-${index}" name="triggerCondition">
+              <option value="moreOrEqual" ${action.actionMoreOrEqual ? 'selected' : ''}>Больше или равно</option>
+              <option value="lessOrEqual" ${!action.actionMoreOrEqual ? 'selected' : ''}>Меньше или равно</option>
+            </select>
+            <input type="number" id="action-triggerValueMax-${index}" name="triggerValueMax" step="any" value="${action.triggerValueMax}" placeholder="Порог срабатывания">
+          </div>
+          <div class="form-row">
+            <label>Сбросить, если значение:</label>
+            <span style="display: inline-block; width: 25px; text-align: center; font-weight: bold;">${action.actionMoreOrEqual ? 'меньше' : 'больше'}</span>
+            <input type="number" id="action-triggerValueMin-${index}" name="triggerValueMin" step="any" value="${action.triggerValueMin || 0}" placeholder="Порог сброса">
+          </div>
+
+          <div class="form-row">
+            <h4>Тип действия</h4>
+            <div class="checkbox-group" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+              <label><input type="radio" name="actionType${index}" value="0" ${actionTypeIndex === 0 ? 'checked' : ''} onchange="handleSensorActionTypeChange(${index}, 0)"> Управление температурой</label>
+              <label><input type="radio" name="actionType${index}" value="1" ${actionTypeIndex === 1 ? 'checked' : ''} onchange="handleSensorActionTypeChange(${index}, 1)"> Задать выходы</label>
+              <label><input type="radio" name="actionType${index}" value="2" ${actionTypeIndex === 2 ? 'checked' : ''} onchange="handleSensorActionTypeChange(${index}, 2)"> Управление таймерами</label>
+              <label><input type="radio" name="actionType${index}" value="3" ${actionTypeIndex === 3 ? 'checked' : ''} onchange="handleSensorActionTypeChange(${index}, 3)"> Отправить сообщение</label>
+            </div>
+          </div>
+
+          <div id="sensor-return-setting-container-${index}" class="form-row" style="display: ${showReturnSetting ? 'flex' : 'none'};">
+            <label>Возврат в исходное состояние:</label>
+            <input type="checkbox" id="action-isReturnSetting-${index}" name="isReturnSetting" ${action.isReturnSetting ? 'checked' : ''}>
+          </div>
+
+          <div id="sensor-message-container-${index}" class="form-row" style="display: ${isMessageAction ? 'flex' : 'none'};">
+            <label>Сообщение:</label>
+            <input type="text" id="action-sendMsg-${index}" name="sendMsg" value="${action.sendMsg || ''}" placeholder="Введите сообщение">
+          </div>
+
+<div id="sensor-outputs-container-${index}" style="display: ${isOutputAction ? 'block' : 'none'}; text-align: left; width: 100%;">
+  <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <h4 style="margin: 0; display: inline;">Выходы</h4>
+    <button type="button" onclick="addSensorOutput(${index})" class="secondary">+ Добавить выход</button>
+  </div>
+
+  <div id="sensor-outputs-list-${index}" style="text-align: left;">
+
+  </div>
+</div>
+
+          <div class="form-actions">
+            <button type="button" onclick="saveSensorActionSettings(${index})" class="primary">Сохранить</button>
+            <button type="button" onclick="closeSensorActionSettings(${index})" class="secondary">Отменить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  deviceSettings.actions.forEach((action, index) => {
+    const actionTypeIndex = action.collectionSettings?.findIndex(s => s) ?? 1;
+    if (actionTypeIndex === 1) {
+      renderSensorOutputsList(index);
+    }
+  });
+}
+
+function updateSensorActionsFromServer(updatedDeviceSettings) {
+  if (updatedDeviceSettings.actions) {
+   updateSpecificUIElement('isActionEnabled', deviceSettings.isActionEnabled);
+    deviceSettings.actions = updatedDeviceSettings.actions;
+    renderSensorActions();
+
+  }
+}
+
+function generateSensorOptions(selectedSensorId) {
+  if (!deviceSettings.sensors || deviceSettings.sensors.length === 0) {
+    return '<option value="-1">Сенсоры не настроены</option>';
+  }
+  return deviceSettings.sensors
+    .filter(sensor => sensor.isUseSetting)
+    .map(sensor => {
+      const sensorId = sensor.sensorId;
+      const description = sensor.description || `Сенсор ID: ${sensorId}`;
+      const isSelected = sensorId === selectedSensorId;
+
+      return `<option value="${sensorId}" ${isSelected ? 'selected' : ''}>${description}</option>`;
+    })
+    .join('');
+}
+
+function updateDeviceFlags(data) {
+
+  const timersCheckbox = document.getElementById('timersUseSetting');
+  const schedulesCheckbox = document.getElementById('schedulesUseSetting');
+  const tempCheckbox = document.getElementById('temperatureUseSetting');
+  const actionsCheckbox = document.getElementById('actionEnabled');
+  const encyclateCheckbox = document.getElementById('encyclateTimers');
+
+  if (timersCheckbox) timersCheckbox.checked = data.te;
+  if (schedulesCheckbox) schedulesCheckbox.checked = data.se;
+  if (tempCheckbox) tempCheckbox.checked = data.tu;
+  if (actionsCheckbox) actionsCheckbox.checked = data.ae;
+  if (encyclateCheckbox) encyclateCheckbox.checked = data.tc;
+
+}
+
+function formatSensorValueString(sensor) {
+  const sensorType = getSensorTypeText(sensor);
+  const tempValid = sensor.currentValue > -998;
+  const humidityValid = sensor.humidityValue > -998;
+
+  switch (sensorType) {
+    case "DHT11":
+    case "DHT22":
+      if (tempValid && humidityValid) {
+        return `${sensor.currentValue.toFixed(1)}°C / ${sensor.humidityValue.toFixed(1)}%`;
+      } else if (tempValid) {
+        return `${sensor.currentValue.toFixed(1)}°C`;
+      } else if (humidityValid) {
+        return `${sensor.humidityValue.toFixed(1)}%`;
+      }
+      break;
+
+    case "NTC":
+      if (tempValid) {
+        return `${sensor.currentValue.toFixed(1)}°C`;
+      }
+      break;
+
+    case "TOUCH_GND":
+      if (tempValid) {
+        return `${sensor.currentValue.toFixed(0)}`;
+      }
+      break;
+
+    case "ANALOG":
+      if (tempValid) {
+        return `${sensor.currentValue.toFixed(1)}`;
+      }
+      break;
+
+    default:
+      if (tempValid) {
+        return `${sensor.currentValue.toFixed(1)}°C`;
+      }
+      break;
+  }
+
+  return "-/-";
+}
+
+function updateUISensorStatus(data) {
+
+  if (!data.sensors || !Array.isArray(data.sensors)) {
+    console.error("Некорректные данные для обновления сенсоров:", data);
+    return;
+  }
+
+  data.sensors.forEach(updatedSensor => {
+    const globalSensor = deviceSettings.sensors.find(s => s.sensorId === updatedSensor.id);
+    if (globalSensor) {
+      globalSensor.currentValue = updatedSensor.cv;
+      globalSensor.humidityValue = updatedSensor.hv;
+    }
+  });
+
+  const tempSensor = deviceSettings.sensors.find(s => s.sensorId === deviceSettings.temperature.sensorId);
+  const tempValueElement = document.getElementById('temp-current-value-display');
+  const tempHeaderValueElement = document.getElementById('temp-header-value');
+
+  if (tempSensor && tempValueElement) {
+    const isError = tempSensor.currentValue <= -998;
+    const valueString = formatSensorValueString(tempSensor);
+    tempValueElement.textContent = isError ? '-/- °C' : valueString;
+    tempValueElement.style.color = isError ? 'red' : 'green';
+
+    if (tempHeaderValueElement) {
+      tempHeaderValueElement.textContent = isError ? '-/- °C' : valueString;
+      tempHeaderValueElement.style.color = isError ? 'red' : 'green';
+    }
+  }
+
+  deviceSettings.actions.forEach((action, actionIndex) => {
+    const actionSensor = deviceSettings.sensors.find(s => s.sensorId === action.targetSensorId);
+    const actionValueElement = document.getElementById(`action-current-value-${actionIndex}`);
+    if (actionSensor && actionValueElement) {
+      const isError = actionSensor.currentValue <= -998;
+      const valueString = formatSensorValueString(actionSensor);
+      actionValueElement.textContent = isError ? 'Ошибка' : valueString;
+      actionValueElement.style.color = isError ? 'red' : 'green';
+    }
+  });
+
+  data.sensors.forEach(updatedSensor => {
+    const globalSensor = deviceSettings.sensors.find(s => s.sensorId === updatedSensor.id);
+    if (globalSensor) {
+      const listValueElement = document.getElementById(`sensor-status-${updatedSensor.id}`);
+      if (listValueElement) {
+        const currentType = getSensorTypeText(globalSensor);
+        const valueString = formatSensorValueString(globalSensor);
+        listValueElement.textContent = `ID: ${updatedSensor.id} | ${currentType} | ${valueString}`;
+      }
+    }
+  });
+}
+
+function updateUITimers(data) {
+
+  if (!data.timers || !Array.isArray(data.timers)) {
+    console.error("Некорректные данные для обновления таймеров:", data);
+    return;
+  }
+
+  data.timers.forEach(updatedTimer => {
+    const index = updatedTimer.i;
+
+	deviceSettings.timers[index].isUseSetting = updatedTimer.e;
+
+    const countdownSpan = document.getElementById(`timerCountdown-${index}`);
+    const timeInput = document.getElementById(`timer-time-input-${index}`);
+
+    if (!countdownSpan || !timeInput) {
+      console.warn(`Не найдены элементы UI для таймера с индексом ${index}`);
+      return;
+    }
+
+    const timeString = secondsToTimeString(updatedTimer.rt);
+    countdownSpan.textContent = timeString;
+
+    let color = 'black';
+    if (updatedTimer.r) {
+      color = '#4CAF50';
+    } else if (!updatedTimer.r && updatedTimer.s) {
+      color = 'red';
+    }
+    countdownSpan.style.color = color;
+
+    timeInput.disabled = updatedTimer.r;
+  });
+}
+
+function secondsToTimeString(totalSeconds) {
+  if (totalSeconds < 0) totalSeconds = 0;
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const pad = (num) => String(num).padStart(2, '0');
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+function saveDateTime() {
+
+  const dateInput = document.getElementById("dateInput").value;
+  const timeInput = document.getElementById("timeInput").value;
+  const timezone = document.getElementById("timezone").value;
+
+  sendData = {
+    event: 'saveDateTime',
+    date: dateInput,
+    time: timeInput,
+    timeZone: timezone
+  };
+  socket.send(JSON.stringify(sendData));
+
+}
+
+function setCurrentDateForInputDate() {
+  const currentDate = new Date();
+
+  const year = String(currentDate.getFullYear());
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  const dateStr = `${year}-${month}-${day}`;
+
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+  const timeStr = `${hours}:${minutes}:${seconds}`;
+
+  const timeInput = document.getElementById("timeInput");
+  const dateInput = document.getElementById("dateInput");
+
+  timeInput.value = timeStr;
+  dateInput.value = dateStr;
+
+  timeInput.step = "1";
+
+}
+
+function setCurrentDate() {
+
+  const currentDate = new Date();
+
+  const dateStr = currentDate.toISOString().split("T")[0];
+
+  const timeStr = currentDate.toTimeString().split(" ")[0].slice(0, 5);
+
+  document.getElementById("startDate").value = dateStr;
+  document.getElementById("startTime").value = timeStr;
+  document.getElementById("endDate").value = dateStr;
+  document.getElementById("endTime").value = timeStr;
+
+}
+
+function uploadFile() {
+  const uploadStatus = document.getElementById("uploadStatus");
+  const fileInput = document.getElementById("fileInput");
+  const fileName = document.getElementById('fileName');
+  const file = fileInput.files[0];
+
+  uploadStatus.textContent = "";
+
+  if (!file) {
+    uploadStatus.textContent = "Файл не выбран";
+    return;
+  }
+
+  fileName.textContent = fileInput.files[0].name;
+  uploadStatus.textContent = 'File selected';
+
+  const extension = file.name.split(".").pop().toLowerCase();
+  const isFirmware = extension === "bin";
+
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 2000;
+  let retryCount = 0;
+  let xhr = null;
+
+  function executeUpload() {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    if (!isFirmware) {
+      uploadStatus.textContent = "Загрузка файла...";
+
+      xhr = new XMLHttpRequest();
+      xhr.open("POST", "/uploadFile", true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          uploadStatus.textContent = "Файл успешно загружен!";
+          location.reload();
+        } else {
+          handleError(new Error(`Ошибка: ${xhr.statusText}`));
+        }
+      };
+
+      xhr.onerror = function () {
+        handleNetworkError();
+      };
+
+      xhr.onabort = function () {
+        handleNetworkError();
+      };
+
+      xhr.send(formData);
+      return;
+    }
+
+    uploadStatus.textContent = "Начало загрузки прошивки...";
+
+    xhr = new XMLHttpRequest();
+    xhr.open("POST", "/uploadFile", true);
+
+    xhr.timeout = 30000;
+
+    xhr.upload.onprogress = function (e) {
+      if (e.lengthComputable) {
+        const percent = Math.round((e.loaded / e.total) * 100);
+        uploadStatus.textContent = `Загрузка прошивки... ${percent}%`;
+      }
+    };
+
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        uploadStatus.textContent = "Прошивка загружена, идёт обновление...";
+
+        startServerCheck();
+      } else {
+        handleError(new Error(xhr.statusText));
+      }
+    };
+
+    xhr.onerror = function () {
+      handleNetworkError();
+    };
+
+    xhr.onabort = function () {
+      handleNetworkError();
+    };
+
+    xhr.ontimeout = function () {
+      handleNetworkError();
+    };
+
+    xhr.send(formData);
+  }
+
+  function handleNetworkError() {
+    if (retryCount < MAX_RETRIES) {
+      retryCount++;
+      uploadStatus.textContent = `Обрыв связи (попытка ${retryCount}/${MAX_RETRIES}), повтор через ${RETRY_DELAY / 1000}сек...`;
+
+      setTimeout(() => {
+
+        if (xhr) {
+          xhr.abort();
+        }
+        executeUpload();
+      }, RETRY_DELAY);
+    } else {
+      handleError(new Error("Не удалось загрузить файл после нескольких попыток"));
+    }
+  }
+
+  function handleError(error) {
+    console.error("Ошибка:", error);
+    uploadStatus.textContent = `Ошибка: ${error.message}`;
+
+    retryCount = 0;
+  }
+
+  executeUpload();
+}
+
+let periodicPingTimer = null;
+
+function sendPingWithTimeout(timeout = 3000) {
+  return new Promise((resolve) => {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      resolve(false);
+      showBalloon('Соединение с устройством потеряно', true, 10);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      resolve(false);
+    }, timeout);
+
+    const handlePong = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === 'pong') {
+          clearTimeout(timeoutId);
+          socket.removeEventListener('message', handlePong);
+          resolve(true);
+        }
+      } catch (error) {
+
+      }
+    };
+
+    socket.addEventListener('message', handlePong);
+
+    socket.send(JSON.stringify({ event: 'ping' }));
+  });
+}
+
+function showManualRefreshMessage() {
+  let networkName = "ESP-AP";
+
+    if (currentSettings.isAP) {
+
+      networkName = currentSettings.ssidAP || "ESP-AP";
+    } else {
+
+      const selectedRadio = document.querySelector('input[name="current-network"]:checked');
+      if (selectedRadio) {
+        networkName = selectedRadio.closest('.network-item').dataset.ssid;
+      } else {
+
+        networkName = "вашей WiFi сети";
+      }
+
+  }
+
+  uploadStatus.textContent = `❌ Устройство недоступно. Подключитесь к WiFi '${networkName}' и обновите страницу вручную`;
+}
+
+function startServerCheck() {
+  let seconds = 0;
+  let secondsTimer = null;
+  let isChecking = true;
+
+  function stopChecking() {
+    isChecking = false;
+    if (secondsTimer) {
+      clearInterval(secondsTimer);
+      secondsTimer = null;
+    }
+  }
+
+function updateSeconds() {
+    if (!isChecking) return;
+
+    seconds--;
+
+    uploadStatus.textContent = `Ожидание устройства... ${seconds} сек`;
+
+    if (seconds <= 0) {
+      stopChecking();
+      showManualRefreshMessage();
+    }
+}
+
+  async function checkServer() {
+    if (!isChecking) return;
+
+    const success = await sendPingWithTimeout();
+
+    if (success) {
+      checkServerStability();
+    } else if (seconds < 30) {
+      setTimeout(checkServer, 500);
+    } else {
+      stopChecking();
+      showManualRefreshMessage();
+    }
+  }
+
+  function checkServerStability() {
+    uploadStatus.textContent = "Проверка стабильности...";
+
+    setTimeout(async () => {
+      if (!isChecking) return;
+
+      const success = await sendPingWithTimeout();
+
+      if (success) {
+        stopChecking();
+        uploadStatus.textContent = "✅ Устройство готово!";
+        setTimeout(async () => {
+          const finalSuccess = await sendPingWithTimeout();
+          if (finalSuccess) {
+            location.reload();
+          } else {
+            uploadStatus.textContent = "❌ Устройство снова недоступно. Обновите страницу вручную";
+          }
+        }, 2000);
+      } else {
+        uploadStatus.textContent = "Устройство перезагружается...";
+        setTimeout(checkServer, 500);
+      }
+    }, 2000);
+  }
+
+  seconds = 30;
+  secondsTimer = setInterval(updateSeconds, 1000);
+  checkServer();
+}
+
+function startPeriodicPing() {
+  if (periodicPingTimer) return;
+
+  periodicPingTimer = setInterval(async () => {
+    const success = await sendPingWithTimeout();
+    if (!success) {
+      console.warn("⚠️ Устройство не отвечает на ping");
+      showBalloon('Соединение с устройством потеряно', true, 10);
+
+    }
+  }, 5000);
+}
+
+function stopPeriodicPing() {
+  if (periodicPingTimer) {
+    clearInterval(periodicPingTimer);
+    periodicPingTimer = null;
+  }
+}
+
+function handleSocketOpen(event) {
+  wasEverConnected = true;
+
+  showBalloon('Соединение с устройством восстановлено!', false, 5);
+  reconnectAttempts = 0;
+  startPeriodicPing();
+}
+
+function handleSocketClose(event) {
+  if (isPageUnloading) return;
+  if (wasEverConnected) {
+
+    showBalloon('Соединение с устройством потеряно', true, 10);
+  }
+
+  stopPeriodicPing();
+  if (!isManuallyClosed) {
+    scheduleReconnect();
+  }
+}
+
+function handleSocketError(error) {
+  console.error('⚠️ WebSocket error:', error);
+  stopPeriodicPing();
+  if (!isManuallyClosed) {
+    scheduleReconnect();
+  }
+}
+
+function scheduleReconnect() {
+  if (isManuallyClosed || reconnectAttempts >= maxReconnectAttempts) {
+    return;
+  }
+
+  reconnectAttempts++;
+  const delay = Math.min(baseReconnectDelay * Math.pow(1.5, reconnectAttempts - 1), 10000);
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      reconnectTimeout = setTimeout(initWebSocket, delay);
+    });
+  } else {
+    reconnectTimeout = setTimeout(initWebSocket, delay);
+  }
+}
+
+let isLogSectionOpen = false;
+let receivedInitialLogs = false;
+
+document.getElementById('event-header').addEventListener('click', function() {
+
+  setTimeout(function() {
+    const section = document.getElementById('event-section');
+    const isOpen = section.style.display !== 'none';
+    isLogSectionOpen = isOpen;
+
+    let settingsData = {};
+
+    if (isOpen) {
+      settingsData = { event: 'event_logs_open'} ;
+    } else {
+      settingsData = { event: 'event_logs_close'};
+    }
+
+     if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(settingsData));
+
+      document.getElementById('logContainer').style.display = isOpen ? 'block' : 'none';
+
+      if (!isOpen) {
+        receivedInitialLogs = false;
+      }
+    } else {
+      console.warn('WebSocket is not connected');
+    }
+  }, 10);
+});
+
+function clearLogs() {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ event: 'event_logs_clear' }));
+
+    document.getElementById('logContent').innerHTML = '';
+    document.getElementById('no-logs-message').style.display = 'block';
+  } else {
+    console.warn('WebSocket is not connected');
+  }
+}
+
+function saveLogsToFile(buttonElement) {
+
+  buttonElement.disabled = true;
+  socket.send(JSON.stringify({ event: 'event_logs_save' }));
+  setTimeout(() => {
+    downloadFile(`log.txt`);
+    buttonElement.disabled = false;
+  }, 500);
+}
+
+function getlogs(data) {
+  try {
+    if (data.event === 'all_logs') {
+      const logs = data.logs;
+      displayAllLogs(logs);
+      receivedInitialLogs = true;
+
+    } else if (data.event === 'new_log' && isLogSectionOpen && receivedInitialLogs) {
+
+      addNewLog(data);
+
+    } else if (data.event === 'logs_cleared') {
+
+      document.getElementById('logContent').innerHTML = '';
+      document.getElementById('no-logs-message').style.display = 'block';
+
+    } else if (data.event === 'logs_closed') {
+
+    }
+
+  } catch (error) {
+    console.error('Error parsing WebSocket message in getlogs:', error);
+  }
+};
+
+function displayAllLogs(logs) {
+  const logContent = document.getElementById('logContent');
+  const noLogsMessage = document.getElementById('no-logs-message');
+
+  logContent.innerHTML = '';
+
+  if (!logs || logs.length === 0) {
+    noLogsMessage.style.display = 'block';
+    return;
+  }
+
+  noLogsMessage.style.display = 'none';
+
+  logs.reverse().forEach(log => {
+    addLogEntry(log, logContent);
+  });
+
+  scrollLogs(true);
+}
+
+function addNewLog(logData) {
+  const logContent = document.getElementById('logContent');
+  const noLogsMessage = document.getElementById('no-logs-message');
+
+  noLogsMessage.style.display = 'none';
+
+  addLogEntry(logData, logContent, true);
+
+  scrollToNewLog();
+}
+
+function addLogEntry(log, container, prepend = false) {
+  const logEntry = document.createElement('div');
+  logEntry.classList.add('log-entry');
+
+  logEntry.style.borderBottom = '1px solid #eee';
+
+  if (prepend) {
+    logEntry.classList.add('log-highlight');
+  }
+
+  const timestamp = document.createElement('span');
+  timestamp.style.color = '#666';
+  timestamp.style.fontSize = '0.9em';
+  timestamp.textContent = `[${log.timestamp}] `;
+
+  const message = document.createElement('span');
+  message.textContent = log.message;
+  if (log.isSay) {
+    message.style.color = '#007bff';
+    message.style.fontWeight = 'bold';
+  }
+
+  logEntry.appendChild(timestamp);
+  logEntry.appendChild(message);
+
+  if (prepend) {
+    container.prepend(logEntry);
+  } else {
+    container.appendChild(logEntry);
+  }
+}
+
+function scrollToNewLog() {
+
+  setTimeout(() => {
+    const container = document.getElementById('logContainer');
+    if (container) {
+
+      container.scrollTop = 0;
+    }
+  }, 0);
+}
+
+function scrollLogs(top = true) {
+  setTimeout(() => {
+    const container = document.getElementById('logContainer');
+    if (container) {
+
+      container.scrollTop = top ? 0 : container.scrollHeight;
+    }
+  }, 0);
+}
+
+async function downloadFile(filenames) {
+  const files = filenames
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name);
+
+  const maxRetries = 3;
+  const retryDelay = 2000;
+
+  for (const filename of files) {
+    let retries = 0;
+    let success = false;
+
+    while (retries < maxRetries && !success) {
+      try {
+        let formData = new FormData();
+        formData.append("file", filename);
+
+        const response = await fetch("/download", {
+          method: "POST",
+          body: formData,
+
+          signal: AbortSignal.timeout(30000),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки файла ${filename}: ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        success = true;
+
+      } catch (error) {
+        retries++;
+        console.error(`Попытка ${retries}/${maxRetries} для файла ${filename}:`, error);
+
+        if (retries < maxRetries) {
+
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+
+          retryDelay = Math.min(retryDelay * 1.5, 10000);
+        } else {
+          console.error(`Не удалось загрузить файл ${filename} после ${maxRetries} попыток`);
+
+          showBalloon(`Ошибка загрузки файла ${filename}: ${error.message}`, true);
+        }
+      }
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+}
+
+   function updateMdnsLink() {
+    const mdnsInput = document.getElementById('mDNS');
+    const mdnsLink = document.getElementById('mdns-link');
+
+    if (!mdnsInput || !mdnsLink) {
+        console.error("Элементы mDNS не найдены!");
+        return;
+    }
+
+    const hostname = mdnsInput.value.trim();
+
+    if (hostname) {
+        const fullUrl = `http://${hostname}.local`;
+        mdnsLink.href = fullUrl;
+        mdnsLink.textContent = fullUrl;
+    } else {
+        mdnsLink.href = currentSettings.urlPath;
+        mdnsLink.textContent = currentSettings.urlPath;
+    }
+}
+
+function toggleMdnsInput() {
+    const input = document.getElementById('mDNS');
+    const editBtn = document.getElementById('mdns-edit-btn');
+
+    if (!input) return;
+
+    const initialValue = input.value;
+
+    input.classList.toggle('hidden');
+
+    if (!input.classList.contains('hidden')) {
+        setTimeout(() => input.focus(), 10);
+
+        input.dataset.initialValue = initialValue;
+
+    } else {
+        if (input.value !== input.dataset.initialValue) {
+            updateMdnsLink();
+            saveWiFiSettings();
+        }
+        delete input.dataset.initialValue;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const mdnsInput = document.getElementById('mDNS');
+    if (mdnsInput) {
+        mdnsInput.addEventListener('input', function() {
+            updateMdnsLink();
+        });
+    }
+});
+
+function generateUniqueName(baseName, existingItems, nameProperty = "ssid", keepOriginal = false, separator = " ") {
+  if (!existingItems || !existingItems.length) {
+    return keepOriginal ? baseName : `${baseName}${separator}1`;
+  }
+
+  const cleanBaseName = baseName.replace(new RegExp(`\\${separator}\\d+$`), "");
+  const existingNames = existingItems.map((item) => item[nameProperty] || "");
+  const regex = new RegExp(`^${escapeRegExp(cleanBaseName)}(?:\\${separator}(\\d+))?$`);
+  const matchingNames = existingNames.filter((name) => regex.test(name));
+
+  if (!keepOriginal || !existingNames.includes(cleanBaseName)) {
+    if (matchingNames.length === 0) {
+      return `${cleanBaseName}${separator}1`;
+    }
+
+    let maxIndex = 0;
+    matchingNames.forEach((name) => {
+      const match = name.match(regex);
+      const currentIndex = match && match[1] ? parseInt(match[1], 10) : 0;
+      maxIndex = Math.max(maxIndex, currentIndex);
+    });
+
+    return `${cleanBaseName}${separator}${maxIndex + 1}`;
+  }
+
+  if (!matchingNames.some((name) => name === cleanBaseName)) {
+    return cleanBaseName;
+  }
+
+  let maxIndex = 0;
+  matchingNames.forEach((name) => {
+    const match = name.match(regex);
+    const currentIndex = match && match[1] ? parseInt(match[1], 10) : 0;
+    maxIndex = Math.max(maxIndex, currentIndex);
+  });
+
+  return `${cleanBaseName}${separator}${maxIndex + 1}`;
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getCheckboxValue(id) {
+  const checkbox = document.getElementById(id);
+  return checkbox ? checkbox.checked : false;
+}
+
+let timeoutId;
+let fadeTimeoutId;
+
+let balloonTimeoutId = null;
+let balloonFadeTimeoutId = null;
+
+function showBalloon(message, error = false, time = 3) {
+  var balloon = document.getElementById("statusBalloon");
+
+  clearTimeout(balloonTimeoutId);
+  clearTimeout(balloonFadeTimeoutId);
+
+  const hideBalloon = () => {
+    balloon.style.opacity = 0;
+    balloonFadeTimeoutId = setTimeout(() => {
+      balloon.style.display = "none";
+    }, 500);
+  };
+
+  const clickHandler = () => {
+    clearTimeout(balloonTimeoutId);
+    clearTimeout(balloonFadeTimeoutId);
+    hideBalloon();
+    document.removeEventListener("click", clickHandler);
+  };
+
+  balloon.innerHTML = message;
+  balloon.classList.remove("success", "error");
+  balloon.classList.add(error ? "error" : "success");
+
+  balloon.style.display = "block";
+
+  balloon.offsetHeight;
+
+  balloon.style.opacity = 1;
+
+  document.addEventListener("click", clickHandler);
+
+  balloonTimeoutId = setTimeout(() => {
+    document.removeEventListener("click", clickHandler);
+    hideBalloon();
+  }, time * 1000);
+}
+
+  </script>
+</body>
+</html>
